@@ -8,6 +8,7 @@ add_task(async function test_Check_Creation() {
   const workspaces = await ZenWorkspaces._workspaces();
   ok(workspaces.workspaces.length === 2, 'Two workspaces should exist.');
 
+  await ZenWorkspaces.changeWorkspace(workspaces.workspaces[1]);
   let newTab = BrowserTestUtils.addTab(gBrowser, 'about:blank', {
     skipAnimation: true,
     userContextId: 1,
