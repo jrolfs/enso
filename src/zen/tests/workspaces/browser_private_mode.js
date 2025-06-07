@@ -3,7 +3,7 @@
 
 'use strict';
 
-add_task(async function testPrivateMode() {
+add_task(async function test_Private_Mode() {
   await SpecialPowers.pushPrefEnv({
     set: [['privacy.userContext.enabled', true]],
   });
