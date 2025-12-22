@@ -13,4 +13,5 @@ DIRS += [
     "tests",
     "urlbar",
     "toolkit",
+    "sessionstore",
 ]
