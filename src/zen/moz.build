@@ -15,4 +15,5 @@ DIRS += [
     "urlbar",
     "toolkit",
     "sessionstore",
+    "share",
 ]
