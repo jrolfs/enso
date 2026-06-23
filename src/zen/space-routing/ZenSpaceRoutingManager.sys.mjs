@@ -19,6 +19,58 @@ class nsZenSpaceRoutingManager {
   }
 
   /**
+   * Auto invoked for every window on delayed startup
+   *
+   * @param {nsIDOMWindow} window - The browser window that just started up
+   */
+  onDelayedBrowserStartup(window) {
+    const element = window.MozXULElement.parseXULToFragment(`
+        <menuseparator/>
+        <menuitem id="context_zen-add-domain-to-routing"
+                  data-lazy-l10n-id="tab-context-zen-add-domain-to-sr"
+                  data-l10n-args='{"tabCount": 1}'/>
+      `);
+    window.document.getElementById("context_undoCloseTab").after(element);
+
+    window.document
+      .getElementById("context_zen-add-domain-to-routing")
+      .addEventListener("command", this.#onAddSelectedToRouting.bind(this));
+    window.document
+      .getElementById("tabContextMenu")
+      .addEventListener(
+        "popupshowing",
+        this.#updateTabCloseCountState.bind(this)
+      );
+  }
+
+  /**
+   * Updates the "context_zen-add-domain-to-routing" command
+   * to reflect the number of selected tabs, when applicable.
+   *
+   * @param {Event} event - The event param
+   */
+  #updateTabCloseCountState(event) {
+    const window = event.target.documentGlobal;
+    window.document.l10n.setArgs(
+      window.document.getElementById("context_zen-add-domain-to-routing"),
+      { tabCount: window.gBrowser.selectedTabs.length }
+    );
+  }
+
+  /**
+   * Callback for whenever the menuitem command is ran
+   *
+   * @param {Event} event - The event parameter
+   */
+  #onAddSelectedToRouting(event) {
+    const window = event.target.documentGlobal;
+    const tabs = window.TabContextMenu.contextTab.multiselected
+      ? window.gBrowser.selectedTabs
+      : [window.TabContextMenu.contextTab];
+    this.addRouteForSelected(tabs, window);
+  }
+
+  /**
    * Callback that will be executed from tabbrowser.js
    * This method can be used to stop the tab from being created.
    *
@@ -401,6 +453,37 @@ class nsZenSpaceRoutingManager {
    */
   setDefaultExternalRoute(routeType) {
     this.#file.data.defaultRouteExternal = routeType;
+  }
+
+  /**
+   * Adds a new route for all given tabs
+   *
+   * @param {Array<object>} selectedTabs - The tabs that should be routed
+   * @param {Window} parentWindow - The window from which this is being executed
+   */
+  addRouteForSelected(selectedTabs, parentWindow) {
+    const newRoute = this.createNewRoute();
+    let routeReference = "";
+
+    if (selectedTabs.length == 1) {
+      newRoute.matchType = "contains";
+      routeReference = selectedTabs[0].linkedBrowser.currentURI.host;
+    } else {
+      newRoute.matchType = "regex";
+      routeReference = "(";
+      for (let i = 0; i < selectedTabs.length; i++) {
+        const domain = selectedTabs[i].linkedBrowser.currentURI.host;
+        routeReference += domain.replaceAll(".", "\.");
+        if (i != selectedTabs.length - 1) {
+          routeReference += "|";
+        }
+      }
+      routeReference += ")";
+    }
+
+    newRoute.reference = routeReference;
+    this.updateRoute(newRoute);
+    this.openSpaceRoutingDialog(parentWindow);
   }
 
   /**
