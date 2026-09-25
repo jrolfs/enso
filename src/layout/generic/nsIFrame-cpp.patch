@@ -1,0 +1,35 @@
+diff --git a/layout/generic/nsIFrame.cpp b/layout/generic/nsIFrame.cpp
+index dec5c78038de9cb234ec24c7d0fe3356768f5fb8..00716f9677cb24c9ae30298f989e0bf217d06325 100644
+--- a/layout/generic/nsIFrame.cpp
++++ b/layout/generic/nsIFrame.cpp
+@@ -4,6 +4,9 @@
+ 
+ /* base class of all rendering objects */
+ 
++#include "mozilla/Glide.h"
++#include "mozilla/StaticPrefs_glide.h"
++
+ #include "nsIFrame.h"
+ 
+ #include <stdarg.h>
+@@ -2686,7 +2689,19 @@ void nsIFrame::DisplayCaret(nsDisplayListBuilder* aBuilder,
+ }
+ 
+ nscolor nsIFrame::GetCaretColorAt(int32_t aOffset) {
+-  return nsLayoutUtils::GetTextColor(this, &nsStyleUI::mCaretColor);
++  auto baseColor = nsLayoutUtils::GetTextColor(this, &nsStyleUI::mCaretColor);
++
++  // If in block caret mode, override the caret colour so that
++  // the underlying character can be visible by always using using
++  // an alpha.
++  StripAtomic<RelaxedAtomicInt32> glideCaretStyle = StaticPrefs::glide_caret_style();
++  if (StaticPrefs::glide_vimcaret() && glide::shouldRenderBlockCaret(glideCaretStyle)) {
++    auto color = sRGBColor::FromABGR(baseColor);
++    color.a = 0.5;
++    return color.ToABGR();
++  }
++
++  return baseColor;
+ }
+ 
+ auto nsIFrame::ComputeShouldPaintBackground() const -> ShouldPaintBackground {

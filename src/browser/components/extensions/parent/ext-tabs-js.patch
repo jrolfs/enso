@@ -1,8 +1,8 @@
 diff --git a/browser/components/extensions/parent/ext-tabs.js b/browser/components/extensions/parent/ext-tabs.js
-index f342748d4b680a5de3a8b7c90df79f7c380b9e1c..65091cf370e00a580ae2cb1fad9cde76f10c8bd9 100644
+index 0a9b522374bd78dd4038b24e211fa90dd0621b39..5abd7d1262e2b7406da0df8b57d76e683cf1ecf2 100644
 --- a/browser/components/extensions/parent/ext-tabs.js
 +++ b/browser/components/extensions/parent/ext-tabs.js
-@@ -438,6 +438,7 @@ this.tabs = class extends ExtensionAPIPersistent {
+@@ -439,6 +439,7 @@ this.tabs = class extends ExtensionAPIPersistent {
          }
  
          let tab = tabManager.getWrapper(updatedTab);
@@ -10,7 +10,19 @@ index f342748d4b680a5de3a8b7c90df79f7c380b9e1c..65091cf370e00a580ae2cb1fad9cde76
  
          let changeInfo = {};
          for (let prop of needed) {
-@@ -806,6 +807,7 @@ this.tabs = class extends ExtensionAPIPersistent {
+@@ -719,7 +720,10 @@ this.tabs = class extends ExtensionAPIPersistent {
+           }).then(window => {
+             let url;
+ 
+-            let options = { triggeringPrincipal: context.principal };
++            let options = {
++              triggeringPrincipal:
++                context.extension?.loaderPrincipal || context.principal,
++            };
+             if (createProperties.cookieStoreId) {
+               // May throw if validation fails.
+               options.userContextId = getUserContextIdForCookieStoreId(
+@@ -807,6 +811,7 @@ this.tabs = class extends ExtensionAPIPersistent {
                });
              }
  
@@ -18,3 +30,28 @@ index f342748d4b680a5de3a8b7c90df79f7c380b9e1c..65091cf370e00a580ae2cb1fad9cde76
              let nativeTab = window.gBrowser.addTab(url, options);
              tabTracker.addTabReadyBlocker(nativeTab);
  
+@@ -880,7 +885,8 @@ this.tabs = class extends ExtensionAPIPersistent {
+               flags: updateProperties.loadReplace
+                 ? Ci.nsIWebNavigation.LOAD_FLAGS_REPLACE_HISTORY
+                 : Ci.nsIWebNavigation.LOAD_FLAGS_NONE,
+-              triggeringPrincipal: context.principal,
++              triggeringPrincipal:
++                context.extension?.loaderPrincipal || context.principal,
+             };
+ 
+             if (!context.checkLoadURL(url, { dontReportErrors: true })) {
+@@ -1661,7 +1667,13 @@ this.tabs = class extends ExtensionAPIPersistent {
+               }
+             }
+           }
+-          if (hidden.length) {
++          // Glide's internal extension is the browser itself running the
++          // user's config, so warning that "an extension is hiding tabs"
++          // (and moving the alltabs button around) makes no sense for it.
++          if (
++            hidden.length &&
++            extension.id !== "glide-internal@mozilla.org"
++          ) {
+             let win = Services.wm.getMostRecentWindow("navigator:browser");
+ 
+             // Before showing the hidden tabs warning,

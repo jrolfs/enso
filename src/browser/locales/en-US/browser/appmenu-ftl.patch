@@ -1,0 +1,15 @@
+diff --git a/browser/locales/en-US/browser/appmenu.ftl b/browser/locales/en-US/browser/appmenu.ftl
+index 451657fd118ed149e4867478027be14fe7908cea..8bf973cd2cafe3e3ab0967aa0eb5cbbef3eed870 100644
+--- a/browser/locales/en-US/browser/appmenu.ftl
++++ b/browser/locales/en-US/browser/appmenu.ftl
+@@ -408,6 +408,10 @@ appmenu-help-not-deceptive =
+     .label = This isn’t a deceptive site…
+     .accesskey = d
+ 
++# Glide
++appmenu-glide-mode =
++    .label = Glide mode
++
+ ## More Tools
+ 
+ appmenu-customizetoolbar =

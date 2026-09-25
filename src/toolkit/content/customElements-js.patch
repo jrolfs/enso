@@ -1,0 +1,17 @@
+diff --git a/toolkit/content/customElements.js b/toolkit/content/customElements.js
+index b41936929efe7bd5048d00319b80673b42dc8d84..f3c5dea5661bb5e9990612dae64ec32ce2608919 100644
+--- a/toolkit/content/customElements.js
++++ b/toolkit/content/customElements.js
+@@ -786,6 +786,12 @@
+     for (let [tag, script] of [
+       ["button-group", "chrome://global/content/elements/named-deck.js"],
+       ["findbar", "chrome://global/content/elements/findbar.js"],
++      // glide-injection-start
++      [
++        "glide-commandline",
++        "chrome://global/content/elements/glide-commandline.js",
++      ],
++      // glide-injection-end
+       ["menulist", "chrome://global/content/elements/menulist.js"],
+       ["named-deck", "chrome://global/content/elements/named-deck.js"],
+       ["named-deck-button", "chrome://global/content/elements/named-deck.js"],

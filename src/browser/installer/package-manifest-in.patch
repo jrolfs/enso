@@ -1,8 +1,20 @@
 diff --git a/browser/installer/package-manifest.in b/browser/installer/package-manifest.in
-index 83e52b260c380b8a4fdcb9146c36a048adffba68..f55844c294bc0a0e648fd6fc09f63218c9b71de2 100644
+index 46725ca0498537098daebed34a5e503306e44882..b7b967dd2268e630b9951cf6d463751f685be37b 100644
 --- a/browser/installer/package-manifest.in
 +++ b/browser/installer/package-manifest.in
-@@ -390,9 +390,9 @@ bin/libfreebl_64int_3.so
+@@ -249,6 +249,11 @@
+ @RESPATH@/chrome/pdfjs/*
+ @RESPATH@/defaults/pref/PdfJsDefaultPrefs.js
+ 
++; glide-injection-start
++@RESPATH@/chrome/glide.manifest
++@RESPATH@/chrome/glide@JAREXT@
++; glide-injection-end
++
+ ; shell icons
+ #ifdef XP_UNIX
+ #ifndef XP_MACOSX
+@@ -395,9 +400,9 @@ bin/libfreebl_64int_3.so
  ;
  #ifdef MOZ_CRASHREPORTER
  #ifdef XP_MACOSX

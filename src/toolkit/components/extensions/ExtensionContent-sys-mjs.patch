@@ -1,0 +1,63 @@
+diff --git a/toolkit/components/extensions/ExtensionContent.sys.mjs b/toolkit/components/extensions/ExtensionContent.sys.mjs
+index 116c307808ffa7c58f37476fa60d8c1e97ec85bb..de227065e01d53f334c6072a6b1fc404584e954f 100644
+--- a/toolkit/components/extensions/ExtensionContent.sys.mjs
++++ b/toolkit/components/extensions/ExtensionContent.sys.mjs
+@@ -1136,6 +1136,58 @@ export class ContentScriptContextChild extends BaseContext {
+     );
+     lazy.Schemas.exportLazyGetter(this.sandbox, "chrome", () => this.chromeObj);
+ 
++    // add an internal helper to expose specific internal APIs we need.
++    //
++    // currently only used in browser-messenger.ts
++    if (extension?.id === "glide-internal@mozilla.org") {
++      lazy.Schemas.exportLazyGetter(
++        this.sandbox,
++        "$internal_glide",
++        () => {
++          let obj = Cu.createObjectIn(this.sandbox);
++          obj = ChromeUtils.waiveXrays(obj)
++
++          obj.send_message = Cu.exportFunction((messenger_id, name) => {
++            this.childManager.conduit.sendAPICall({ childId: this.childManager.conduit.id, path: 'glide.sendMessage', args: [messenger_id, name] });
++          }, obj)
++
++          obj.deserialise_glidefunction = Cu.exportFunction((source) => {
++            return Cu.evalInSandbox(
++              source,
++              this.cloneScope,
++              "latest",
++              "sandbox eval code",
++              1,
++            );
++
++          }, obj)
++
++          return obj
++        }
++      );
++      lazy.Schemas.exportLazyGetter(this.sandbox, "DOM", () => {
++        const DOMUtils = ChromeUtils.importESModule("chrome://glide/content/utils/dom.mjs")
++
++        let obj = Cu.createObjectIn(this.sandbox);
++
++        obj.create_element = (tag_name, props_or_children, props) => {
++          return DOMUtils.create_element(
++            tag_name,
++            props_or_children,
++            props,
++            this.contentWindow.document
++          );
++        };
++
++        obj.listeners = Cu.createObjectIn(this.sandbox);
++        obj.listeners.has = (target, type) => {
++          return Services.els.hasListenersFor(target, type);
++        }
++
++        return obj;
++      });
++    }
++
+     // Keep track if the userScript API script has been already executed in this context
+     // (e.g. because there are more then one UserScripts that match the related webpage
+     // and so the UserScript apiScript has already been executed).

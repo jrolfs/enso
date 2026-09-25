@@ -1,0 +1,73 @@
+diff --git a/browser/components/DesktopActorRegistry.sys.mjs b/browser/components/DesktopActorRegistry.sys.mjs
+index 61d0449fc878421f2bc2ddad37d3429cd0d54f49..119cbd141f3048ebd30e173f3225fdb92f0f38fc 100644
+--- a/browser/components/DesktopActorRegistry.sys.mjs
++++ b/browser/components/DesktopActorRegistry.sys.mjs
+@@ -43,6 +43,13 @@ let JSPROCESSACTORS = {
+     remoteTypes: ["parent", "privilegedabout"],
+   },
+ 
++  GeminiProtocol: {
++    parent: {
++      esModuleURI: "resource:///actors/GeminiProtocolParent.sys.mjs",
++    },
++    includeParent: true,
++  },
++
+   RefreshBlockerObserver: {
+     child: {
+       esModuleURI: "resource:///actors/RefreshBlockerChild.sys.mjs",
+@@ -96,6 +103,54 @@ let JSWINDOWACTORS = {
+     remoteTypes: ["parent"],
+   },
+ 
++  GlideDocs: {
++    parent: {
++      esModuleURI: "resource:///actors/GlideDocsParent.sys.mjs",
++    },
++    child: {
++      esModuleURI: "resource:///actors/GlideDocsChild.sys.mjs",
++      events: {
++        DOMContentLoaded: {},
++      },
++    },
++    matches: ["resource://glide-docs/dynamic/mappings.html"],
++    allFrames: false,
++    includeChrome: false,
++  },
++  GlideTutor: {
++    parent: {
++      esModuleURI: "resource:///actors/GlideTutorParent.sys.mjs",
++    },
++    child: {
++      esModuleURI: "resource:///actors/GlideTutorChild.sys.mjs",
++      events: {
++        DOMContentLoaded: {},
++        click: {},
++      },
++    },
++    matches: ["resource://glide-tutor/*"],
++    allFrames: false,
++    includeChrome: false,
++  },
++
++  GlideHandler: {
++    parent: {
++      esModuleURI: "resource:///actors/GlideHandlerParent.sys.mjs",
++    },
++    child: {
++      esModuleURI: "resource:///actors/GlideHandlerChild.sys.mjs",
++      events: {
++        DOMContentLoaded: {},
++        focusin: {},
++        blur: {},
++        keydown: {},
++      },
++    },
++    allFrames: true,
++    includeChrome: true,
++    safeForUntrustedWebProcess: true,
++  },
++
+   AboutLogins: {
+     parent: {
+       esModuleURI: "resource:///actors/AboutLoginsParent.sys.mjs",

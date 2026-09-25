@@ -1,0 +1,13 @@
+diff --git a/browser/base/content/global-scripts.js b/browser/base/content/global-scripts.js
+index bbeb801d5c7559b88dde56ad67d0950925a914e2..6118df82ea648ce425fa0e4bfd11fd2b1d105475 100644
+--- a/browser/base/content/global-scripts.js
++++ b/browser/base/content/global-scripts.js
+@@ -13,6 +13,8 @@
+ // prettier-ignore
+ // eslint-disable-next-line no-lone-blocks
+ {
++  Services.scriptloader.loadSubScript("chrome://glide/content/glide-scripts.js", this);
++
+   Services.scriptloader.loadSubScript("chrome://browser/content/browser.js", this);
+   Services.scriptloader.loadSubScript("chrome://browser/content/places/browserPlacesViews.js", this);
+   Services.scriptloader.loadSubScript("chrome://browser/content/browser-places.js", this);

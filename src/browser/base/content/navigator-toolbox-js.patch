@@ -1,8 +1,8 @@
 diff --git a/browser/base/content/navigator-toolbox.js b/browser/base/content/navigator-toolbox.js
-index 10faff18ca0c6df472de81b5dbdba83309fa2eb8..b675df9ad22150f5a1060dedbabf6cb27c951619 100644
+index a24b4daf8639d4cceae79b19611ff82659f43f61..eb8df76fcd6acd19ca2a37c8f32bb0ddb1e75a3c 100644
 --- a/browser/base/content/navigator-toolbox.js
 +++ b/browser/base/content/navigator-toolbox.js
-@@ -10,7 +10,7 @@ ChromeUtils.defineESModuleGetters(this, {
+@@ -10,9 +10,26 @@ ChromeUtils.defineESModuleGetters(this, {
  document.addEventListener(
    "DOMContentLoaded",
    () => {
@@ -10,8 +10,27 @@ index 10faff18ca0c6df472de81b5dbdba83309fa2eb8..b675df9ad22150f5a1060dedbabf6cb2
 +    const navigatorToolbox = document.getElementById("browser");
      const widgetOverflow = document.getElementById("widget-overflow");
  
++    // glide-injection-start
++
++    // The default CSS adds a child node for the icon but as we don't have an icon
++    // it doesn't work. So just remove it here as the alternative is defining our own CSS class which
++    // will likely come with a lot of maintenance burden and this appears to be the only thing that doesn't
++    // work out of the box at the time of writing (2024-11-15).
++    const glide_mode_button = document.getElementById(
++      "glide-toolbar-mode-button"
++    );
++    glide_mode_button.removeChild(glide_mode_button.childNodes[1]);
++    const glide_keyseq_button = document.getElementById(
++      "glide-toolbar-keyseq-button"
++    );
++    glide_keyseq_button.removeChild(glide_keyseq_button.childNodes[0]);
++
++    // glide-injection-end
++
      function onPopupShowing(event) {
-@@ -188,6 +188,7 @@ document.addEventListener(
+       switch (event.target.id) {
+         case "PlacesChevronPopup":
+@@ -210,6 +227,7 @@ document.addEventListener(
          #forward-button,
          #reload-button ,
          #reader-mode-button,
@@ -19,7 +38,7 @@ index 10faff18ca0c6df472de81b5dbdba83309fa2eb8..b675df9ad22150f5a1060dedbabf6cb2
          #picture-in-picture-button,
          #urlbar-zoom-button,
          #star-button-box,
-@@ -214,6 +215,17 @@ document.addEventListener(
+@@ -236,6 +254,17 @@ document.addEventListener(
            gBrowser.handleNewTabMiddleClick(element, event);
            break;
  
@@ -37,7 +56,7 @@ index 10faff18ca0c6df472de81b5dbdba83309fa2eb8..b675df9ad22150f5a1060dedbabf6cb2
          case "back-button":
          case "forward-button":
          case "reload-button":
-@@ -331,6 +343,7 @@ document.addEventListener(
+@@ -354,6 +383,7 @@ document.addEventListener(
          #downloads-button,
          #fxa-toolbar-menu-button,
          #unified-extensions-button,
@@ -45,7 +64,7 @@ index 10faff18ca0c6df472de81b5dbdba83309fa2eb8..b675df9ad22150f5a1060dedbabf6cb2
          #library-button,
          #ipprotection-button,
          #split-view-button,
-@@ -416,6 +429,16 @@ document.addEventListener(
+@@ -443,6 +473,16 @@ document.addEventListener(
            gUnifiedExtensions.togglePanel(event);
            break;
  

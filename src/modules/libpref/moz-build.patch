@@ -1,8 +1,18 @@
 diff --git a/modules/libpref/moz.build b/modules/libpref/moz.build
-index fa05921295e8f028c4893c3cc224415d1251b877..acfcecaf6b0ae5f0aef5b540d9e60a3f5ffd02f4 100644
+index 2c8b218c618f8fa73ab4b21f4155d5f063bc1bb4..c5f6a089a121bab1330f48e1c9b99cbdb67f09cf 100644
 --- a/modules/libpref/moz.build
 +++ b/modules/libpref/moz.build
-@@ -91,6 +91,7 @@ pref_groups = [
+@@ -49,6 +49,9 @@ pref_groups = [
+     "geo",
+     "gfx",
+     "gl",
++    # glide-injection-start
++    "glide",
++    # glide-injection-end
+     "html5",
+     "idle_period",
+     "image",
+@@ -90,6 +93,7 @@ pref_groups = [
      "view_source",
      "webgl",
      "widget",

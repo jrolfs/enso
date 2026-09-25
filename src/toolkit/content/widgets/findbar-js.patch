@@ -1,12 +1,77 @@
 diff --git a/toolkit/content/widgets/findbar.js b/toolkit/content/widgets/findbar.js
-index ff9bb99e4ca481feb97d060e34eae37846ba55cf..6517111456d85d975d5857a044c642bdc1294be4 100644
+index 0934995e0bc3b84022f287db809cfdb69d357024..e0535f6bd47a5d20a77080e54ad1e898d72d8da0 100644
 --- a/toolkit/content/widgets/findbar.js
 +++ b/toolkit/content/widgets/findbar.js
-@@ -1189,6 +1189,7 @@
+@@ -1138,12 +1138,13 @@
+      *                      FIND_NORMAL, FIND_TYPEAHEAD or FIND_LINKS. If not
+      *                      passed, we revert to the last find mode if any or
+      *                      FIND_NORMAL.
++     * @param {boolean} [userWantsPrefill=true]
++     * @param {string} [currentSelection]
+      * @return {Promise} A promise that will be resolved when the findbar is
+      *                   fully opened.
+      */
+-    startFind(mode) {
++    startFind(mode, userWantsPrefill = true, currentSelection) {
+       let prefsvc = Services.prefs;
+-      let userWantsPrefill = true;
+       this.open(mode);
+ 
+       if (this._flashFindBar) {
+@@ -1183,7 +1184,7 @@
+       // then we might need to check the selection clipboard. Call
+       // onCurrentSelection to do so.
+       // Note: this.onCurrentSelection clears this._startFindDeferred.
+-      this.onCurrentSelection("", true);
++      this.onCurrentSelection(currentSelection, true, true);
+       return startFindPromise;
+     }
+ 
+@@ -1194,6 +1195,7 @@
       *   e.g. <command name="cmd_find" oncommand="gFindBar.onFindCommand();"/>
       */
      onFindCommand() {
 +      if (gBrowser?.selectedTab?.hasAttribute("zen-empty-tab")) return;
        return this.startFind(this.FIND_NORMAL);
      }
+ 
+@@ -1344,7 +1346,14 @@
+       // Noop.
+     }
+ 
+-    onCurrentSelection(selectionString, isInitialSelection) {
++    // glide: we add the `stringCanBeUndefined` param and use it to differentiate the "zero value" for `selectionString`
++    //        so that we can explicitly set the selection string to an empty string without having to update all of the other
++    //        places that can call this function that treat an empty string as the zero value.
++    onCurrentSelection(
++      selectionString,
++      isInitialSelection,
++      stringCanBeUndefined = false
++    ) {
+       // Ignore the prefill if the user has already typed in the findbar,
+       // it would have been overwritten anyway. See bug 1198465.
+       if (isInitialSelection && !this._startFindDeferred) {
+@@ -1354,15 +1363,21 @@
+       if (
+         AppConstants.platform == "macosx" &&
+         isInitialSelection &&
+-        !selectionString
++        (stringCanBeUndefined
++          ? typeof selectionString === "undefined"
++          : !selectionString)
+       ) {
+         let clipboardSearchString = this.browser.finder.clipboardSearchString;
++        console.log({ clipboardSearchString });
+         if (clipboardSearchString) {
+           selectionString = clipboardSearchString;
+         }
+       }
+ 
+-      if (selectionString) {
++      if (
++        (stringCanBeUndefined && typeof selectionString !== "undefined") ||
++        selectionString
++      ) {
+         this._findField.value = selectionString;
+       }
  

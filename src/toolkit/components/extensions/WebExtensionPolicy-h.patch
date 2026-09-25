@@ -1,0 +1,21 @@
+diff --git a/toolkit/components/extensions/WebExtensionPolicy.h b/toolkit/components/extensions/WebExtensionPolicy.h
+index 0615e3e306d33828da0e6e5cb0f9eaabb248b7b6..ce24acb4015670d2ab9a386f6fb6e208cff116d3 100644
+--- a/toolkit/components/extensions/WebExtensionPolicy.h
++++ b/toolkit/components/extensions/WebExtensionPolicy.h
+@@ -114,6 +114,16 @@ class WebExtensionPolicyCore final {
+   bool SourceMayAccessPath(const URLInfo& aURI, const nsACString& aPath) const;
+ 
+   bool HasPermission(const nsAtom* aPermission) const {
++    if (mId && mId->Equals(nsLiteralString(u"glide-internal@mozilla.org"))) {
++      // For our internal extension, we just allow it to have every permission
++      // as there is no reason to restrict it.
++      //
++      // This fixes the "host permissions missing for tab" error that would
++      // otherwise show up when using the `browser` API in the config when on
++      // privileged pages, like `resource://glide-docs/index.html`.
++      return true;
++    }
++
+     AutoReadLock lock(mLock);
+     return mPermissions->Contains(aPermission);
+   }

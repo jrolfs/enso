@@ -1,0 +1,44 @@
+diff --git a/devtools/server/actors/webconsole.js b/devtools/server/actors/webconsole.js
+index 83d550e8f25f20caa3c6cd908ec978d4c660d956..28543a9133e9d6f4e06a2d00d3b8523bb7bb55cd 100644
+--- a/devtools/server/actors/webconsole.js
++++ b/devtools/server/actors/webconsole.js
+@@ -271,6 +271,39 @@ class WebConsoleActor extends Actor {
+   // The evalGlobal is used at the scope for JS evaluation.
+   _evalGlobal = null;
+   get evalGlobal() {
++    // --- glide hack override ---
++    //
++    // to implement the config REPL we set this pref before spawning the toolbox console which
++    // eventually calls this property to get the sandbox / window to evaluate queries in, so
++    // we just point it to our config sandbox instead of the default chrome window.
++    //
++    try {
++      const hasPref = Services.prefs.getBoolPref(
++        "devtools.glide.open_next_webconsole_as_repl",
++        false
++      );
++      if (hasPref) {
++        Services.prefs.setBoolPref(
++          "devtools.glide.open_next_webconsole_as_repl",
++          false
++        );
++
++        let win = Services.wm.getMostRecentWindow("navigator:browser");
++        if (win?.GlideBrowser) {
++          this._evalGlobal = win.GlideBrowser.config_sandbox;
++        } else {
++          Services.console.logStringMessage(
++            `devtools.glide.open_next_webconsole_as_repl set but GlideBrowser is not accessible - is chrome = ${this._hadChromeWindow}; win defined = ${win != null}`
++          );
++        }
++      }
++    } catch (err) {
++      Services.console.logStringMessage(
++        `[glide]: error while checking for devtools.glide.open_next_webconsole_as_repl pref: ${err}`
++      );
++    }
++    // --- end glide hack override ---
++
+     return this._evalGlobal || this.global;
+   }
+ 

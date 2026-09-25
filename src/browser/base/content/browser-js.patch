@@ -1,8 +1,19 @@
 diff --git a/browser/base/content/browser.js b/browser/base/content/browser.js
-index 4960f4baed32a9e9f523262591eb93550ca9c4b0..9ee825057b1b3b5a08e1d2b2c1036f1be2088da6 100644
+index 1e5946e697bdaaef5253306310837a226201f150..e4668e5be9442d96b1e7f836b03ec8ebda511694 100644
 --- a/browser/base/content/browser.js
 +++ b/browser/base/content/browser.js
-@@ -34,6 +34,7 @@ ChromeUtils.defineESModuleGetters(this, {
+@@ -12,6 +12,10 @@ var { AppConstants } = ChromeUtils.importESModule(
+ // lazy module getters
+ 
+ ChromeUtils.defineESModuleGetters(this, {
++  // glide-injection-start
++  GlideHandlerParent: "resource:///actors/GlideHandlerParent.sys.mjs",
++  // glide-injection-end
++
+   AIWindow:
+     "moz-src:///browser/components/aiwindow/ui/modules/AIWindow.sys.mjs",
+   AMTelemetry: "resource://gre/modules/AddonManager.sys.mjs",
+@@ -34,6 +38,7 @@ ChromeUtils.defineESModuleGetters(this, {
      "moz-src:///toolkit/components/contextualidentity/ContextualIdentityService.sys.mjs",
    CustomizableUI:
      "moz-src:///browser/components/customizableui/CustomizableUI.sys.mjs",
@@ -10,7 +21,7 @@ index 4960f4baed32a9e9f523262591eb93550ca9c4b0..9ee825057b1b3b5a08e1d2b2c1036f1b
    DevToolsSocketStatus:
      "resource://devtools/shared/security/DevToolsSocketStatus.sys.mjs",
    DownloadUtils: "resource://gre/modules/DownloadUtils.sys.mjs",
-@@ -831,7 +832,12 @@ function UpdateBackForwardCommands(aWebNavigation) {
+@@ -851,7 +856,12 @@ function UpdateBackForwardCommands(aWebNavigation) {
  
    var backDisabled = backCommand.hasAttribute("disabled");
    var forwardDisabled = forwardCommand.hasAttribute("disabled");
@@ -24,7 +35,7 @@ index 4960f4baed32a9e9f523262591eb93550ca9c4b0..9ee825057b1b3b5a08e1d2b2c1036f1b
      if (backDisabled) {
        backCommand.removeAttribute("disabled");
      } else {
-@@ -3973,7 +3979,7 @@ function warnAboutClosingWindow() {
+@@ -3976,7 +3986,7 @@ function warnAboutClosingWindow() {
  
    if (!isPBWindow && !toolbar.visible) {
      return gBrowser.warnAboutClosingTabs(
@@ -33,7 +44,7 @@ index 4960f4baed32a9e9f523262591eb93550ca9c4b0..9ee825057b1b3b5a08e1d2b2c1036f1b
        gBrowser.closingTabsEnum.ALL
      );
    }
-@@ -4013,7 +4019,7 @@ function warnAboutClosingWindow() {
+@@ -4016,7 +4026,7 @@ function warnAboutClosingWindow() {
      return (
        isPBWindow ||
        gBrowser.warnAboutClosingTabs(
@@ -42,7 +53,7 @@ index 4960f4baed32a9e9f523262591eb93550ca9c4b0..9ee825057b1b3b5a08e1d2b2c1036f1b
          gBrowser.closingTabsEnum.ALL
        )
      );
-@@ -4038,7 +4044,7 @@ function warnAboutClosingWindow() {
+@@ -4041,7 +4051,7 @@ function warnAboutClosingWindow() {
      AppConstants.platform != "macosx" ||
      isPBWindow ||
      gBrowser.warnAboutClosingTabs(
@@ -51,7 +62,7 @@ index 4960f4baed32a9e9f523262591eb93550ca9c4b0..9ee825057b1b3b5a08e1d2b2c1036f1b
        gBrowser.closingTabsEnum.ALL
      )
    );
-@@ -4998,6 +5004,16 @@ var ConfirmationHint = {
+@@ -5005,6 +5015,16 @@ var ConfirmationHint = {
      }
  
      document.l10n.setAttributes(this._message, messageId, l10nArgs);

@@ -1,8 +1,54 @@
 diff --git a/modules/libpref/init/StaticPrefList.yaml b/modules/libpref/init/StaticPrefList.yaml
-index b96e9d02beda72c92c295a2799c851b94945ada6..db79081c6d1bbdf78a38a6cc13494476827bf0d1 100644
+index 72a14fae87a715f5d21f848fd79a08c183da9cfb..26788e915d3c3c66f10ba1a722847092350a3f4b 100644
 --- a/modules/libpref/init/StaticPrefList.yaml
 +++ b/modules/libpref/init/StaticPrefList.yaml
-@@ -20580,6 +20580,7 @@
+@@ -8869,6 +8869,45 @@
+   value: 0
+   mirror: always
+ 
++# glide-injection-start
++#---------------------------------------------------------------------------
++# Glide prefs
++#---------------------------------------------------------------------------
++
++# Used for internal mode state as a cheap / dirty way of getting IPC
++# across JS/C++ code.
++- name: glide.caret.style
++  # value corresponds to the `GlideCaretStyle` enum in `src/glide/cpp/Glide.h`
++  type: RelaxedAtomicInt32
++  value: 0
++  mirror: always
++
++- name: glide.vimcaret
++  type: bool
++  value: true
++  mirror: always
++
++- name: glide.dev.reload_files
++  type: bool
++  value: false
++  mirror: always
++
++- name: glide.firefox.taskbar.badge.enabled
++  type: bool
++  value: false
++  mirror: always
++
++- name: glide.gemini.enabled
++  type: bool
++  value: true
++  mirror: always
++
++- name: glide.gemini.css
++  type: String
++  value: ""
++  mirror: never
++
++# glide-injection-end
+ #---------------------------------------------------------------------------
+ # Prefs starting with "html5."
+ #---------------------------------------------------------------------------
+@@ -21298,6 +21337,7 @@
    mirror: always
  #endif
  

@@ -1,0 +1,71 @@
+diff --git a/toolkit/components/extensions/ExtensionCommon.sys.mjs b/toolkit/components/extensions/ExtensionCommon.sys.mjs
+index 4e079770534d8e8ad89124ab572edaa626ece457..8a23c8521d7829be1deb2dc3376a1b39be0ec4db 100644
+--- a/toolkit/components/extensions/ExtensionCommon.sys.mjs
++++ b/toolkit/components/extensions/ExtensionCommon.sys.mjs
+@@ -689,6 +689,14 @@ export class BaseContext {
+           Reflect.apply(callback, null, args)
+         );
+       } catch (e) {
++        if (this.extension.id === "glide-internal@mozilla.org") {
++          // store any errors that happen when invoking one of the listeners
++          // registered in the config so that the browser code can pick it up
++          // and report the error
++          this.$glide_errors ??= new Set();
++          this.$glide_errors.add({ error: e, source: "applySafeWithoutClone" });
++        }
++
+         if (this.isProxyContextParent) {
+           Cu.reportError(e);
+         }
+@@ -722,6 +730,10 @@ export class BaseContext {
+   }
+ 
+   checkLoadURL(url, options = {}) {
++    if (this.extension.id === "glide-internal@mozilla.org") {
++      return true;
++    }
++
+     // As an optimization, f the URL starts with the extension's base URL,
+     // don't do any further checks. It's always allowed to load it.
+     if (url.startsWith(this.extension.baseURL)) {
+@@ -2755,6 +2767,25 @@ class EventManager {
+     EventManager._writePersistentListeners(extension);
+   }
+ 
++  _callAndRecordGlideError(callback, thisArgument, args) {
++    try {
++      return Reflect.apply(callback, thisArgument, args);
++    } catch (error) {
++      if (this.context?.extension?.id === "glide-internal@mozilla.org") {
++        // store any errors that happen when invoking one of the listeners
++        // registered in the config so that the browser code can pick it up
++        // and report the error
++        this.context.$glide_errors ??= new Set();
++        this.context.$glide_errors.add({
++          error,
++          source: "_callAndRecordGlideError",
++        });
++      }
++
++      throw error;
++    }
++  }
++
+   addListener(callback, ...args) {
+     if (this.unregister.has(callback)) {
+       return;
+@@ -2814,12 +2845,12 @@ class EventManager {
+           this.context.isProxyContextParent ||
+           lazy.callFunctionAndLogExceptionDisabled
+         ) {
+-          result = Reflect.apply(callback, null, args);
++          result = this._callAndRecordGlideError(callback, null, args);
+         } else {
+           // Use callFunctionAndLogException in order to ensure routing any exception to DevTools.
+           result = ChromeUtils.callFunctionAndLogException(
+             this.context.cloneScope,
+-            () => Reflect.apply(callback, null, args)
++            () => this._callAndRecordGlideError(callback, null, args)
+           );
+         }
+         this.context.logActivity("api_event", this.name, { args, result });

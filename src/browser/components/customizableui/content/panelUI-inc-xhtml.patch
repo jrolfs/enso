@@ -1,8 +1,8 @@
 diff --git a/browser/components/customizableui/content/panelUI.inc.xhtml b/browser/components/customizableui/content/panelUI.inc.xhtml
-index 5c248c0d49f3d9378260230c24ab60a4157dc438..1e87a1d040ed82c7edfb31f9e5853a4fb299b503 100644
+index 304404a013f1af139a9abd36f77703ed9ea041c6..623d02b384dec58aaf97f991065d736aaf1a5fdf 100644
 --- a/browser/components/customizableui/content/panelUI.inc.xhtml
 +++ b/browser/components/customizableui/content/panelUI.inc.xhtml
-@@ -139,7 +139,7 @@
+@@ -139,13 +139,29 @@
    <panel id="appMenu-notification-popup"
           class="popup-notification-panel panel-no-padding"
           type="arrow"
@@ -11,3 +11,25 @@ index 5c248c0d49f3d9378260230c24ab60a4157dc438..1e87a1d040ed82c7edfb31f9e5853a4f
           flip="slide"
           orient="vertical"
           noautofocus="true"
+          noautohide="true"
+          nopreventnavboxhide="true"
+          role="alert">
++
++    <popupnotification id="appMenu-glide-smooth-scroll-default-notification"
++                     popupid="glide-smooth-scroll-default"
++                     data-lazy-l10n-id="appmenu-glide-smooth-scroll-default"
++                     data-l10n-attrs="buttonlabel, buttonaccesskey, secondarybuttonlabel, secondarybuttonaccesskey"
++                     closebuttonhidden="true"
++                     dropmarkerhidden="true"
++                     checkboxhidden="true"
++                     buttonhighlight="true"
++                     hasicon="true"
++                     hidden="true">
++      <popupnotificationcontent id="glide-smooth-scroll-default-notification-content" orient="vertical">
++        <description id="glide-smooth-scroll-default-description" data-lazy-l10n-id="appmenu-glide-smooth-scroll-default-message"/>
++      </popupnotificationcontent>
++    </popupnotification>
++
+     <popupnotification id="appMenu-update-available-notification"
+                        popupid="update-available"
+                        data-lazy-l10n-id="appmenu-update-available2"

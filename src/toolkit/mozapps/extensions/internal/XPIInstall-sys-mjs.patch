@@ -1,0 +1,13 @@
+diff --git a/toolkit/mozapps/extensions/internal/XPIInstall.sys.mjs b/toolkit/mozapps/extensions/internal/XPIInstall.sys.mjs
+index 536eff2df3838e411b966886c2fe7b81e7a4ff17..b8ff2b9bf87d36d7406770fb97bb633bb7aaf829 100644
+--- a/toolkit/mozapps/extensions/internal/XPIInstall.sys.mjs
++++ b/toolkit/mozapps/extensions/internal/XPIInstall.sys.mjs
+@@ -985,7 +985,7 @@ function escapeAddonURI(aAddon, aUri, aUpdateType, aAppVersion) {
+   // maxVersion
+   let app = aAddon.matchingTargetApplication;
+   if (app) {
+-    var maxVersion = app.maxVersion;
++    var maxVersion = app.maxVersion ?? "*";
+   } else {
+     maxVersion = "";
+   }

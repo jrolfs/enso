@@ -1,5 +1,5 @@
 diff --git a/browser/themes/shared/toolbarbuttons.css b/browser/themes/shared/toolbarbuttons.css
-index bbf906c7bf1d6f0d71744953aeeb750c5181639a..dd116e22c38dc376c9c6b34dfa569bf4661a8971 100644
+index bbf906c7bf1d6f0d71744953aeeb750c5181639a..4b47e780be6fdb69b62588e43bc74da129e2ce65 100644
 --- a/browser/themes/shared/toolbarbuttons.css
 +++ b/browser/themes/shared/toolbarbuttons.css
 @@ -13,20 +13,6 @@
@@ -69,3 +69,41 @@ index bbf906c7bf1d6f0d71744953aeeb750c5181639a..dd116e22c38dc376c9c6b34dfa569bf4
      }
      > .toolbarbutton-badge-stack {
        align-items: center;
+@@ -587,6 +571,37 @@ toolbarseparator {
+   }
+ }
+ 
++.glide-mode-button {
++  /* TODO(glide): does this work with localisation? */
++  min-width: 10ch;
++  justify-content: left !important;
++  padding-right: 0;
++  position: relative;
++}
++
++.glide-mode-button::after {
++  content: "";
++  position: absolute;
++  bottom: 4px;
++  /* TODO(glide): does this work with localisation? */
++  width: 10ch;
++  height: 2px;
++  background-color: var(--glide-current-mode-color, #0060df);
++  border-radius: 1px;
++}
++
++@media (prefers-color-scheme: dark) {
++  .glide-mode-button::after {
++    background-color: var(--glide-current-mode-color, #45a9ff);
++  }
++}
++
++.glide-keyseq-button {
++  min-width: 10ch;
++  justify-content: right !important;
++  padding-left: 0;
++}
++
+ /* Flexible spacer sizing */
+ 
+ toolbarpaletteitem[place="toolbar"][id^="wrapper-customizableui-special-spring"],

@@ -1,0 +1,15 @@
+diff --git a/toolkit/content/widgets.css b/toolkit/content/widgets.css
+index c106799f93eade3a1ff276c65358ebe80f34355c..b09d65058dafd14518ed9ad5ec5e94cc2927f95c 100644
+--- a/toolkit/content/widgets.css
++++ b/toolkit/content/widgets.css
+@@ -24,3 +24,9 @@
+ @import url("chrome://global/skin/toolbar.css");
+ @import url("chrome://global/skin/toolbarbutton.css");
+ @import url("chrome://global/skin/tree/tree.css");
++
++/* glide-injection-start */
++@import url("chrome://global/skin/glide.css");
++@import url("chrome://global/skin/glide-hints.css");
++@import url("chrome://global/skin/glide-commandline.css");
++/* glide-injection-end */
+\ No newline at end of file

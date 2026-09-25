@@ -1,0 +1,245 @@
+diff --git a/layout/base/nsCaret.cpp b/layout/base/nsCaret.cpp
+index e61e4ba19c878addcd8e6e514200bb7d5cac778e..051ea4a32c1bbb48782930792318d13e8cbf1a29 100644
+--- a/layout/base/nsCaret.cpp
++++ b/layout/base/nsCaret.cpp
+@@ -11,11 +11,13 @@
+ #include "SelectionMovementUtils.h"
+ #include "gfxUtils.h"
+ #include "mozilla/CaretAssociationHint.h"
++#include "mozilla/Glide.h"
+ #include "mozilla/LookAndFeel.h"
+ #include "mozilla/Preferences.h"
+ #include "mozilla/PresShell.h"
+ #include "mozilla/ScrollContainerFrame.h"
+ #include "mozilla/StaticPrefs_bidi.h"
++#include "mozilla/StaticPrefs_glide.h"
+ #include "mozilla/dom/CharacterDataBuffer.h"
+ #include "mozilla/dom/Selection.h"
+ #include "mozilla/gfx/2D.h"
+@@ -23,6 +25,7 @@
+ #include "nsBlockFrame.h"
+ #include "nsCOMPtr.h"
+ #include "nsContentUtils.h"
++#include "nsCoord.h"
+ #include "nsFontMetrics.h"
+ #include "nsFrameSelection.h"
+ #include "nsIBidiKeyboard.h"
+@@ -52,6 +55,23 @@ nsCaret::nsCaret() = default;
+ 
+ nsCaret::~nsCaret() { StopBlinking(); }
+ 
++// glide-injection-start
++static void GlideCaretStyleChangedCallback(const char* aPrefName, void* aData) {
++  if (!aData) {
++    return;
++  }
++  nsCaret* self = static_cast<nsCaret*>(aData);
++  if (self) {
++    self->GlideCaretStyleChangedCallbackInternal();
++  }
++}
++
++void nsCaret::GlideCaretStyleChangedCallbackInternal() {
++  ResetBlinking();
++  SchedulePaint();
++}
++// glide-injection-end
++
+ nsresult nsCaret::Init(PresShell* aPresShell) {
+   NS_ENSURE_ARG(aPresShell);
+ 
+@@ -61,6 +81,11 @@ nsresult nsCaret::Init(PresShell* aPresShell) {
+     return NS_ERROR_FAILURE;
+   }
+ 
++  // glide-injection-start
++  Preferences::RegisterCallback(GlideCaretStyleChangedCallback,
++                                "glide.caret.style", this);
++  // glide-injection-end
++
+   selection->AddSelectionListener(this);
+   mDomSelectionWeak = selection;
+   UpdateHiddenDuringSelection();
+@@ -94,6 +119,69 @@ nsCaret::Metrics nsCaret::ComputeMetrics(nsIFrame* aFrame, int32_t aOffset,
+       nsPresContext::CSSPixelsToAppUnits(
+           LookAndFeel::GetInt(LookAndFeel::IntID::CaretWidth, 1));
+ 
++  // glide-injection-start
++  //
++  // Turn the caret into a █ instead of | to give a visual indicator between
++  // insert and normal mode.
++  //
++  // Note that this is heavily relient on the `GetGeometryForFrame` function
++  // then inverting the caret width, otherwise the caret would be placed
++  // incorrectly, e.g. `ab|c` would result in `ab█` when it should be `a█c`
++  //
++  // Note this is also used for the underline caret rendering as that needs to
++  // be based off of the character width as well.
++  StripAtomic<RelaxedAtomicInt32> glideCaretStyle =
++      StaticPrefs::glide_caret_style();
++  if (StaticPrefs::glide_vimcaret() &&
++      (glide::shouldRenderBlockCaret(glideCaretStyle) ||
++       glide::shouldRenderUnderlineCaret(glideCaretStyle))) {
++    if (nsTextFrame* textFrame = do_QueryFrame(aFrame)) {
++      nsIContent* content = textFrame->GetContent();
++      if (content) {
++        const CharacterDataBuffer* frag = content->GetCharacterDataBuffer();
++
++        // -1 as we're placing the caret over the character *before* the
++        // cursor would normally be, e.g.
++        // ```
++        // text = ab|c
++        // aOffset -> c
++        // aOffset - 1 -> b
++        // result = a█c
++        // ```
++        int32_t charOffset = aOffset - 1;
++
++        // `o` has been arbitrarily chosen to use as the default character for
++        // measuring the caret width
++        char16_t fallbackChar = 'o';
++
++        char16_t charToMeasure = fallbackChar;
++        if (frag && charOffset >= 0 &&
++            charOffset < static_cast<int>(frag->GetLength())) {
++          charToMeasure = frag->CharAt(charOffset);
++        }  // can happen if there is no text yet
++
++        mozilla::PresShell* shell = aFrame->PresContext()->GetPresShell();
++        if (shell) {
++          DrawTarget* drawTarget =
++              shell->CreateReferenceRenderingContext()->GetDrawTarget();
++
++          if (drawTarget) {
++            caretWidth = nsLayoutUtils::AppUnitWidthOfString(
++                charToMeasure, *textFrame->InflatedFontMetrics(), drawTarget);
++
++            if (caretWidth == 0) {
++              caretWidth = nsLayoutUtils::AppUnitWidthOfString(
++                  // use `o` as a fallback char to determine the width of the
++                  // caret if we couldn't determine it from the current char
++                  fallbackChar, *textFrame->InflatedFontMetrics(), drawTarget);
++            }
++          }
++        }
++      }
++    }
++  }
++  // glide-injection-end
++
+   if (DrawCJKCaret(aFrame, aOffset)) {
+     caretWidth += nsPresContext::CSSPixelsToAppUnits(1);
+   }
+@@ -117,6 +205,11 @@ void nsCaret::Terminate() {
+   StopBlinking();
+   mBlinkTimer = nullptr;
+ 
++  // glide-injection-start
++  Preferences::UnregisterCallback(GlideCaretStyleChangedCallback,
++                                  "glide.caret.style", this);
++  // glide-injection-end
++
+   // unregiser ourselves as a selection listener
+   if (mDomSelectionWeak) {
+     mDomSelectionWeak->RemoveSelectionListener(this);
+@@ -232,7 +325,11 @@ static nsPoint AdjustRectForClipping(const nsRect& aRect, nsIFrame* aFrame,
+ 
+ /* static */
+ nsRect nsCaret::GetGeometryForFrame(nsIFrame* aFrame, int32_t aFrameOffset,
+-                                    nscoord* aBidiIndicatorSize) {
++                                    nscoord* aBidiIndicatorSize,
++                                    // glide-injection-start
++                                    GeometryPositioning positioning
++                                    // glide-injection-end
++) {
+   nsPoint framePos(0, 0);
+   nsRect rect;
+   nsresult rv = aFrame->GetPointFromOffset(aFrameOffset, &framePos);
+@@ -278,6 +375,17 @@ nsRect nsCaret::GetGeometryForFrame(nsIFrame* aFrame, int32_t aFrameOffset,
+     }
+   }
+ 
++  // glide-injection-start
++  StripAtomic<RelaxedAtomicInt32> glideCaretStyle =
++      StaticPrefs::glide_caret_style();
++  if (positioning == GeometryPositioning::Visual &&
++      StaticPrefs::glide_vimcaret() &&
++      (glide::shouldRenderBlockCaret(glideCaretStyle) ||
++       glide::shouldRenderUnderlineCaret(glideCaretStyle))) {
++    inlineOffset = -(caretMetrics.mCaretWidth);
++  }
++  // glide-injection-end
++
+   // on RTL frames the right edge of mCaretRect must be equal to framePos
+   if (aFrame->StyleVisibility()->mDirection == StyleDirection::Rtl) {
+     inlineOffset -= caretMetrics.mCaretWidth;
+@@ -291,10 +399,29 @@ nsRect nsCaret::GetGeometryForFrame(nsIFrame* aFrame, int32_t aFrameOffset,
+     framePos.y = caretBlockAxisMetrics.mOffset;
+   }
+ 
+-  rect = nsRect(framePos, vertical ? nsSize(caretBlockAxisMetrics.mExtent,
+-                                            caretMetrics.mCaretWidth)
+-                                   : nsSize(caretMetrics.mCaretWidth,
+-                                            caretBlockAxisMetrics.mExtent));
++  // glide-override-start
++  nscoord extent = caretBlockAxisMetrics.mExtent;
++  if (positioning == GeometryPositioning::Visual &&
++      StaticPrefs::glide_vimcaret() &&
++      glide::shouldRenderUnderlineCaret(glideCaretStyle)) {
++    // render the inline caret as 10% of the full character extent
++    // (i.e. the caret height)
++    nscoord newExtent = extent * 0.1;
++
++    // position the caret at the bottom of the character instead of at the top
++    framePos.y = framePos.y + (extent - newExtent);
++
++    extent = newExtent;
++  }
++
++  rect = nsRect(framePos, vertical ? nsSize(extent, caretMetrics.mCaretWidth)
++                                   : nsSize(caretMetrics.mCaretWidth, extent));
++  // glide-original
++  // rect = nsRect(framePos, vertical ? nsSize(caretBlockAxisMetrics.mExtent,
++  //                                           caretMetrics.mCaretWidth)
++  //                                  : nsSize(caretMetrics.mCaretWidth,
++  //                                           caretBlockAxisMetrics.mExtent));
++  // glide-override-end
+ 
+   rect.MoveBy(AdjustRectForClipping(rect, aFrame, vertical));
+   if (aBidiIndicatorSize) {
+@@ -338,11 +465,19 @@ CaretFrameData nsCaret::GetFrameAndOffset(const CaretPosition& aPosition) {
+ }
+ 
+ /* static */
+-nsIFrame* nsCaret::GetGeometry(const Selection* aSelection, nsRect* aRect) {
++nsIFrame* nsCaret::GetGeometry(const Selection* aSelection, nsRect* aRect,
++                               // glide-injection-start
++                               GeometryPositioning positioning
++                               // glide-injection-end
++) {
+   auto data = GetFrameAndOffset(CaretPositionFor(aSelection));
+   if (data.mFrame) {
+     *aRect =
+-        GetGeometryForFrame(data.mFrame, data.mOffsetInFrameContent, nullptr);
++        GetGeometryForFrame(data.mFrame, data.mOffsetInFrameContent, nullptr,
++                            // glide-injection-start
++                            positioning
++                            // glide-injection-end
++        );
+   }
+   return data.mFrame;
+ }
+@@ -599,7 +734,12 @@ void nsCaret::ResetBlinking() {
+   }
+ 
+   const int32_t oldBlinkTime = mBlinkTime;
+-  mBlinkTime = LookAndFeel::CaretBlinkTime();
++  StripAtomic<RelaxedAtomicInt32> glideCaretStyle =
++      StaticPrefs::glide_caret_style();
++  auto mBlinkTime = glide::shouldRenderBlockCaret(glideCaretStyle) ||
++                            glide::shouldRenderUnderlineCaret(glideCaretStyle)
++                        ? 0
++                        : LookAndFeel::CaretBlinkTime();
+   if (mBlinkTime <= 0) {
+     StopBlinking();
+     return;

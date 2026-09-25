@@ -1,0 +1,12 @@
+diff --git a/moz.build b/moz.build
+index 2eb5922b24cdec1e0d2f6e6d21101be1fc424687..75a173b086be99fc1e2612ad44dafd740533e9f6 100644
+--- a/moz.build
++++ b/moz.build
+@@ -276,6 +276,7 @@ if CONFIG["ENABLE_CLANG_PLUGIN"]:
+     DIRS += ["build/clang-plugin"]
+ 
+ DIRS += [
++    "glide",
+     "build",
+     "config",
+     "python",

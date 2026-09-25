@@ -1,0 +1,18 @@
+diff --git a/browser/actors/moz.build b/browser/actors/moz.build
+index 04f4e98640b569fdf84894275456b66f6123e3e5..070fd1b85063a6ed846f4e713a9a7527129ed084 100644
+--- a/browser/actors/moz.build
++++ b/browser/actors/moz.build
+@@ -118,6 +118,13 @@ FINAL_TARGET_FILES.actors += [
+     "EncryptedMediaParent.sys.mjs",
+     "FormValidationChild.sys.mjs",
+     "FormValidationParent.sys.mjs",
++    "GeminiProtocolParent.sys.mjs",
++    "GlideDocsChild.sys.mjs",
++    "GlideDocsParent.sys.mjs",
++    "GlideHandlerChild.sys.mjs",
++    "GlideHandlerParent.sys.mjs",
++    "GlideTutorChild.sys.mjs",
++    "GlideTutorParent.sys.mjs",
+     "LightweightThemeChild.sys.mjs",
+     "LinkHandlerChild.sys.mjs",
+     "LinkHandlerParent.sys.mjs",

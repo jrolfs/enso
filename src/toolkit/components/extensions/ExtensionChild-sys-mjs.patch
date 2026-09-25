@@ -1,0 +1,179 @@
+diff --git a/toolkit/components/extensions/ExtensionChild.sys.mjs b/toolkit/components/extensions/ExtensionChild.sys.mjs
+index f0c8b871036e946f840c234b7aa9589efe28ba55..c1f8ff21fb02062936195a8a78b82c046857a943 100644
+--- a/toolkit/components/extensions/ExtensionChild.sys.mjs
++++ b/toolkit/components/extensions/ExtensionChild.sys.mjs
+@@ -25,6 +25,15 @@ const lazy = XPCOMUtils.declareLazy({
+   },
+ });
+ 
++/** @type {typeof import("../../../glide/browser/base/content/utils/ipc.mts")} **/
++const { deserialise_args } = ChromeUtils.importESModule(
++  "chrome://glide/content/utils/ipc.mjs"
++);
++/** @type {typeof import("../../../glide/browser/base/content/sandbox.mts")} **/
++const { create_sandbox } = ChromeUtils.importESModule(
++  "chrome://glide/content/sandbox.mjs"
++);
++
+ import { ExtensionCommon } from "resource://gre/modules/ExtensionCommon.sys.mjs";
+ import { ExtensionUtils } from "resource://gre/modules/ExtensionUtils.sys.mjs";
+ 
+@@ -887,6 +896,131 @@ export class ChildAPIManager {
+         return result;
+       });
+     }
++
++    // glide-injection-start
++    //
++    // Adds a handler for a custom path so that the parent actor can invoke arbitrary
++    // methods on the `browser` variable from within the correct extension context.
++    //
++    // This is used to power the `browser` variable inside the glide config file.
++    //
++    // Note that this code path is *not* hit when adding event listeners, e.g.
++    // `browser.tabs.onMoved.addListener(() => ...)`, instead we just use the
++    // `browserObj` from the parent context directly as we'd have to serialize
++    // the given function and the Web Extensions API does not provide a way to
++    // pass arguments through in this case as it's not needed under a typical
++    // setup.
++    //
++    // TODO(glide): just register this inside the extension instead of
++    //              hard-coding it here.
++    if (data.path && data.path === "glide.invoke_browser") {
++      const args = data.args.deserialize(this.context.cloneScope);
++      const method_args = args.slice(1);
++
++      const method_path = args[0];
++      if (!method_path) {
++        throw new Error(
++          "Expected `glide.invoke_browser` message to define a method name argument, e.g. `['tabs.create']`"
++        );
++      }
++
++      let method = this.context.browserObj;
++      for (const prop of method_path.split(".")) {
++        method = method[prop];
++        if (method == null) {
++          throw new Error(
++            `Could not resolve \`browser\` property at path \`${method_path}\` - \`${prop}\` was not defined`
++          );
++        }
++      }
++
++      const args_deser = deserialise_args(this._glide_sandbox, method_args);
++
++      return Promise.resolve(method(...args_deser)).then(result => {
++        switch (method_path) {
++          case "contentScripts.register": {
++            result = Cu.cloneInto(
++              {
++                $glide_content_functions: [
++                  {
++                    name: "unregister",
++                    id: this.glide_register_content_function(
++                      Cu.waiveXrays(result).unregister
++                    ),
++                  },
++                ],
++              },
++              this.context.cloneScope
++            );
++            break;
++          }
++        }
++
++        if (result !== undefined) {
++          return new StructuredCloneHolder(
++            `ChildAPIManager/${this.context.extension.id}/${data.path}`,
++            null,
++            result,
++            this.context.cloneScope
++          );
++        }
++        return result;
++      });
++    }
++
++    // see comment in `glide/browser/base/content/browser.mts` for context
++    if (data.path && data.path === "glide.invoke_content_function") {
++      const args = data.args.deserialize(this.context.cloneScope);
++      const method_args = args.slice(1);
++
++      const function_id = args[0];
++      if (function_id == null) {
++        throw new Error(
++          "Expected `glide.invoke_content_function` message to define a function ID argument, e.g. `[1]`"
++        );
++      }
++
++      const fn = this.glide_content_functions.get(function_id);
++      if (!fn) {
++        throw new Error(
++          `Could not find a content function with ID ${function_id}`
++        );
++      }
++
++      const args_deser = deserialise_args(this._glide_sandbox, method_args);
++
++      return Promise.resolve(fn(...args_deser)).then(result => {
++        if (result !== undefined) {
++          return new StructuredCloneHolder(
++            `ChildAPIManager/${this.context.extension.id}/${data.path}`,
++            null,
++            result,
++            this.context.cloneScope
++          );
++        }
++        return result;
++      });
++    }
++    if (data.path && data.path === "glide.clear_content_function") {
++      const args = data.args.deserialize(this.context.cloneScope);
++
++      const function_id = args[0];
++      if (function_id == null) {
++        throw new Error(
++          "Expected `glide.clear_content_function` message to define a function ID argument, e.g. `[1]`"
++        );
++      }
++
++      const fn = this.glide_content_functions.get(function_id);
++      if (!fn) {
++        // nothing to do
++        return;
++      }
++
++      this.glide_content_functions.delete(function_id);
++      return Promise.resolve();
++    }
++
+     if (!map.removedIds.has(data.listenerId)) {
+       Services.console.logStringMessage(
+         `Unknown listener at childId=${data.childId} path=${data.path} listenerId=${data.listenerId}\n`
+@@ -894,6 +1028,26 @@ export class ChildAPIManager {
+     }
+   }
+ 
++  glide_content_functions_id = 0;
++  /** @type {Map<number, () => void>} */
++  glide_content_functions = new Map();
++
++  glide_register_content_function(fn) {
++    const id = this.glide_content_functions_id++;
++    this.glide_content_functions.set(id, fn);
++    return id;
++  }
++
++  get _glide_sandbox() {
++    return create_sandbox({
++      document: this.context.contentWindow.document,
++      window: this.context.contentWindow,
++      browser: this.context.browserObj,
++      console,
++      glide: null,
++    });
++  }
++
+   async recvStreamFilterSuspendCancel() {
+     const promise = this.context.extension.emitLocalWithResult(
+       "internal:stream-filter-suspend-cancel"

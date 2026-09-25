@@ -1,0 +1,29 @@
+diff --git a/modules/libpref/init/all.js b/modules/libpref/init/all.js
+index 37cba58e2091b617345453ea3cc5725a47f7c235..44eb62a0e906ecfb4134b66481dbb2eeed8c306d 100644
+--- a/modules/libpref/init/all.js
++++ b/modules/libpref/init/all.js
+@@ -3500,7 +3500,7 @@ pref("browser.search.removeEngineInfobar.enabled", true);
+ pref("media.gmp-manager.allowLocalSources", true);
+ 
+ // Update service URL for GMP install/updates:
+-pref("media.gmp-manager.url", "https://aus5.mozilla.org/update/3/GMP/%VERSION%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/update.xml");
++pref("media.gmp-manager.url", "https://aus5.mozilla.org/update/3/GMP/%PLATFORM_VERSION%/%BUILD_ID%/%BUILD_TARGET%/%LOCALE%/%FIREFOX_CHANNEL%/%OS_VERSION%/%DISTRIBUTION%/%DISTRIBUTION_VERSION%/update.xml");
+ 
+ // Whether or not to perform reader mode article parsing on page load.
+ // If this pref is disabled, we will never show a reader mode icon in the toolbar.
+@@ -4152,6 +4152,15 @@ pref("toolkit.osKeyStore.loglevel", "Warn");
+ 
+ pref("extensions.formautofill.supportRTL", false);
+ 
++// ----- glide-injection-start -----
++
++// Glide loggers
++
++pref("glide.logging.loglevel", "Error");
++pref("glide.gemini.loglevel", "Error");
++
++// ----- glide-injection-end -----
++
+ // The domains we will block from installing SitePermsAddons. Comma-separated
+ // full domains: any subdomains of the domains listed will also be allowed.
+ pref("dom.sitepermsaddon-provider.separatedBlocklistedDomains", "shopee.co.th,shopee.tw,shopee.co.id,shopee.com.my,shopee.vn,shopee.ph,shopee.sg,shopee.com.br,shopee.com,shopee.cn,shopee.io,shopee.pl,shopee.com.mx,shopee.com.co,shopee.cl,shopee.kr,shopee.es,shopee.in,alipay.com,miravia.es");

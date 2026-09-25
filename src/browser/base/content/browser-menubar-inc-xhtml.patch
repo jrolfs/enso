@@ -1,0 +1,22 @@
+diff --git a/browser/base/content/browser-menubar.inc.xhtml b/browser/base/content/browser-menubar.inc.xhtml
+index dca7c8281238f5ad4da0debc89defaf365273de6..4f6669895a25f2e6c6513cefb2c9be5f1fddc6be 100644
+--- a/browser/base/content/browser-menubar.inc.xhtml
++++ b/browser/base/content/browser-menubar.inc.xhtml
+@@ -3,6 +3,7 @@
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ 
+        <menubar id="main-menubar">
++  <script src="chrome://glide/content/glide-menubar.js" />
+           <script src="chrome://browser/content/browser-menubar.js" />
+             <menu id="file-menu" data-l10n-id="menu-file">
+               <menupopup id="menu_FilePopup">
+@@ -436,6 +437,9 @@
+ #endif
+               </menupopup>
+             </menu>
++
++  <menu id="menu_glideMode" data-l10n-id="menu-glide-mode">
++  </menu>
+ #ifdef XP_MACOSX
+ <!-- Do not dynamically modify the Window menu and be careful when making static changes to it.
+      macOS adds extra functionality to this menu, such as a list of windows, which can break when
