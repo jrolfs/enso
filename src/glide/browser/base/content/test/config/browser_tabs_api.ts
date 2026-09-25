@@ -1,0 +1,197 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+"use strict";
+
+const INPUT_TEST_URI = "http://mochi.test:8888/browser/glide/browser/base/content/test/mode/input_test.html";
+
+declare global {
+  interface GlideGlobals {
+    test_done?: boolean;
+  }
+}
+
+add_setup(async function setup() {
+  await reload_config(function _() {
+    // empty placeholder config file
+  });
+});
+
+add_task(async function test_tabs_active() {
+  await reload_config(function _() {
+    const INPUT_TEST_URI = "http://mochi.test:8888/browser/glide/browser/base/content/test/mode/input_test.html";
+
+    glide.keymaps.set("normal", "<Space>n", async () => {
+      const tab = await glide.tabs.active();
+      assert(tab.url, INPUT_TEST_URI);
+
+      const tabs: Browser.Tabs.Tab[] = [];
+      const windows: Browser.Windows.Window[] = [];
+
+      try {
+        tabs.push(await browser.tabs.create({}));
+        tabs.push(await browser.tabs.create({}));
+        tabs.push(await browser.tabs.create({}));
+        tabs.push(await browser.tabs.create({}));
+
+        // active tab should still be the first one
+        assert((await glide.tabs.active()).url, INPUT_TEST_URI);
+
+        const all_windows = await browser.windows.getAll();
+        const current_window = all_windows.find(w => w.focused)!;
+
+        windows.push(await browser.windows.create());
+
+        await browser.windows.update(current_window.id!, { focused: true });
+
+        // active tab should still be the first one
+        assert((await glide.tabs.active()).url, INPUT_TEST_URI);
+      } finally {
+        await browser.tabs.remove(tabs.map(tab => tab.id).filter(Boolean));
+        for (const window of windows) {
+          await browser.windows.remove(window.id!);
+        }
+      }
+
+      glide.g.test_checked = true;
+    });
+  });
+
+  await BrowserTestUtils.withNewTab(INPUT_TEST_URI, async _ => {
+    is(gBrowser.selectedBrowser?.currentURI?.spec, INPUT_TEST_URI);
+
+    await keys("<Space>n");
+    await waiter(() => glide.g.test_checked).ok();
+  });
+});
+
+add_task(async function test_tabs_get_first() {
+  await reload_config(function _() {
+    glide.keymaps.set("normal", "<Space>f", async () => {
+      assert(await glide.tabs.get_first({ title: "Test for auto mode switching" }));
+
+      const missing_tab = await glide.tabs.get_first({ title: "Title doesn't exist in any tab at all" });
+      assert(missing_tab === undefined);
+
+      glide.g.test_checked = true;
+    });
+  });
+
+  await BrowserTestUtils.withNewTab(INPUT_TEST_URI, async _ => {
+    await keys("<Space>f");
+    await waiter(() => glide.g.test_checked).ok();
+  });
+});
+
+add_task(async function test_tabs_query() {
+  await reload_config(function _() {
+    glide.keymaps.set("normal", "<Space>f", async () => {
+      let tabs = await glide.tabs.query({ title: "Test for auto mode switching" });
+      assert(tabs.length > 0);
+
+      tabs = await glide.tabs.query({ title: "Title doesn't exist in any tab at all" });
+      assert(tabs.length === 0);
+
+      glide.g.test_checked = true;
+    });
+  });
+
+  await BrowserTestUtils.withNewTab(INPUT_TEST_URI, async _ => {
+    await keys("<Space>f");
+    await waiter(() => glide.g.test_checked).ok();
+  });
+});
+
+add_task(async function test_tabs_unload() {
+  await reload_config(function _() {
+    glide.keymaps.set("normal", "~", async () => {
+      const tabs: Browser.Tabs.Tab[] = [];
+
+      try {
+        tabs.push(await browser.tabs.create({ active: false }));
+        tabs.push(await browser.tabs.create({ active: false }));
+
+        await glide.tabs.unload(tabs[0]!.id!, tabs[1]!);
+
+        assert((await browser.tabs.get(tabs[0]!.id!))!.discarded, "tab 0 should be marked as discarded");
+        assert((await browser.tabs.get(tabs[1]!.id!))!.discarded, "tab 1 should be marked as discarded");
+        assert(!(await glide.tabs.active()).discarded, "active tab should not be discarded");
+
+        glide.g.test_checked = true;
+      } finally {
+        await browser.tabs.remove(tabs.map(tab => tab.id!));
+      }
+    });
+  });
+
+  await BrowserTestUtils.withNewTab(INPUT_TEST_URI, async _ => {
+    await keys("~");
+    await waiter(() => glide.g.test_checked).ok();
+  });
+});
+
+add_task(async function test_tabs_unload__current_tab() {
+  await reload_config(function _() {
+    glide.keymaps.set("normal", "~", async () => {
+      try {
+        await glide.tabs.unload(await glide.tabs.active());
+      } catch (err) {
+        glide.g.value = String(err);
+        glide.g.test_checked = true;
+      }
+    });
+  });
+
+  await BrowserTestUtils.withNewTab(INPUT_TEST_URI, async _ => {
+    await keys("~");
+    await waiter(() => glide.g.test_checked).ok();
+
+    Assert.stringContains(glide.g.value, "active tabs cannot be unloaded");
+  });
+});
+
+add_task(async function test_tabs_hide__no_doorhanger() {
+  await reload_config(function _() {
+    glide.keymaps.set("normal", "~", async () => {
+      const tab = await browser.tabs.create({ active: false });
+      try {
+        await browser.tabs.hide(tab.id!);
+        assert((await browser.tabs.get(tab.id!)).hidden, "tab should be hidden");
+        glide.g.test_checked = true;
+
+        // keep the tab hidden until the test has verified that no
+        // "extension is hiding tabs" doorhanger was shown for it
+        await new Promise<void>(resolve => {
+          const interval = setInterval(() => {
+            if (glide.g.test_done) {
+              clearInterval(interval);
+              resolve();
+            }
+          }, 20);
+        });
+      } finally {
+        await browser.tabs.remove(tab.id!);
+      }
+    });
+  });
+
+  await BrowserTestUtils.withNewTab(INPUT_TEST_URI, async _ => {
+    const tab_count = gBrowser.tabs.length;
+
+    await keys("~");
+    await waiter(() => glide.g.test_checked).ok();
+
+    await Assert.rejects(
+      until(() => {
+        const panel = document!.getElementById("extension-notification-panel") as XULPopupElement | null;
+        return panel?.state === "open" || undefined;
+      }, "waiting for the tab hide doorhanger to be shown"),
+      /timed out/,
+      "the extension controlled tab hide doorhanger should not be shown",
+    );
+
+    glide.g.test_done = true;
+    await waiter(() => gBrowser.tabs.length).is(tab_count);
+  });
+});

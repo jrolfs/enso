@@ -1,0 +1,161 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+:root {
+  /* Generic */
+  --glide-font-family: monospace;
+  --glide-font-family-sans: sans-serif;
+  --glide-font-size: 12pt;
+  --glide-small-font-size: calc(var(--glide-font-size) * 0.75);
+  --glide-bg: white;
+  --glide-fg: black;
+  --glide-scrollbar-color: auto;
+
+  /* Mode indicator */
+  --glide-status-font-family: var(--glide-font-family);
+  --glide-status-font-size: var(--glide-small-font-size);
+  --glide-status-bg: var(--glide-bg);
+  --glide-status-fg: var(--glide-fg);
+  --glide-status-border: 1px lightgray solid;
+  --glide-status-border-radius: 2px;
+  --glide-mode-hint: #f3a;
+  --glide-mode-normal: #a89984;
+  --glide-mode-insert: #83a598;
+  --glide-mode-visual: #fe8019;
+  --glide-mode-ignore: #cc79a7;
+  --glide-mode-command: #fb4934;
+  --glide-mode-op-pending: #b8bb26;
+  --glide-fallback-mode: #ffffff;
+
+  /* Search highlight */
+  --glide-search-highlight-color: yellow;
+
+  /* Hinting */
+
+  /* Hint character tags */
+  --glide-hintspan-font-family: var(--glide-font-family-sans);
+  --glide-hintspan-font-size: var(--glide-small-font-size);
+  --glide-hintspan-font-weight: bold;
+  --glide-hintspan-fg: white;
+  --glide-hintspan-bg: red;
+  --glide-hintspan-border-color: ButtonShadow;
+  --glide-hintspan-border-width: 0px;
+  --glide-hintspan-border-style: solid;
+  --glide-hintspan-js-background: hsla(0, 0%, 65%);
+
+  /* Element highlights */
+  --glide-hint-active-fg: var(--glide-fg);
+  --glide-hint-active-bg: #88ff00;
+  --glide-hint-active-outline: 1px solid #cc0000;
+
+  --glide-hint-bg: rgba(255, 255, 0, 0.25);
+  --glide-hint-outline: 1px solid #8f5902;
+
+  /* :viewsource */
+  --glide-vs-bg: var(--glide-bg);
+  --glide-vs-fg: var(--glide-fg);
+  --glide-vs-font-family: var(--glide-font-family);
+
+  /*commandline*/
+
+  --glide-cmdl-bg: rgb(26, 27, 37);
+  --glide-cmdl-fg: #fff;
+  --glide-cmdl-line-height: 1.2rem;
+  --glide-cmdl-font-family: "Berkeley Mono", monospace;
+  --glide-cmdl-font-size: 1rem;
+
+  /*completions*/
+
+  --glide-cmplt-option-height: 1.8rem;
+  --glide-cmplt-fg: #fff;
+  --glide-cmplt-bg: rgb(26, 27, 37);
+  --glide-cmplt-font-size: 1rem;
+  --glide-cmplt-font-family: "Berkeley Mono", monospace;
+  --glide-cmplt-border-top: 1px solid hsla(0, 0%, 100%, 0.1);
+
+  /*sectionHeader*/
+
+  --glide-header-first-bg: #111;
+  --glide-header-second-bg: #111;
+  --glide-header-third-bg: #111;
+  --glide-header-font-size: 1rem;
+  --glide-header-font-weight: 800;
+  --glide-header-border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+
+  /*url style*/
+
+  --glide-url-text-decoration: none;
+  --glide-url-fg: #1f9947;
+  --glide-url-bg: var(--glide-bg);
+  --glide-url-cursor: pointer;
+
+  /*option focused*/
+
+  --glide-of-fg: rgb(26, 27, 37);
+  --glide-of-bg: #fff;
+
+  /*new tab spoiler box*/
+  --glide-highlight-box-bg: rgba(0, 0, 0, 0.07);
+  --glide-highlight-box-fg: var(--glide-fg);
+
+  --glide-private-window-icon-url: url("chrome://global/skin/icons/indicator-private-browsing.svg");
+
+  --glide-container-fingerprint-url: url("resource://usercontext-content/fingerprint.svg");
+  --glide-container-briefcase-url: url("resource://usercontext-content/briefcase.svg");
+  --glide-container-dollar-url: url("resource://usercontext-content/dollar.svg");
+  --glide-container-cart-url: url("resource://usercontext-content/cart.svg");
+  --glide-container-circle-url: url("resource://usercontext-content/circle.svg");
+  --glide-container-gift-url: url("resource://usercontext-content/gift.svg");
+  --glide-container-vacation-url: url("resource://usercontext-content/vacation.svg");
+  --glide-container-food-url: url("resource://usercontext-content/food.svg");
+  --glide-container-fruit-url: url("resource://usercontext-content/fruit.svg");
+  --glide-container-pet-url: url("resource://usercontext-content/pet.svg");
+  --glide-container-tree-url: url("resource://usercontext-content/tree.svg");
+  --glide-container-chill-url: url("resource://usercontext-content/chill.svg");
+
+  --glide-container-color-blue: #37adff;
+  --glide-container-color-turquoise: #00c79a;
+  --glide-container-color-green: #51cd00;
+  --glide-container-color-yellow: #ffcb00;
+  --glide-container-color-orange: #ff9f00;
+  --glide-container-color-red: #ff613d;
+  --glide-container-color-pink: #ff4bda;
+  --glide-container-color-purple: #af51f5;
+
+  --glide-externaledit-bg: var(--glide-logo) no-repeat center;
+
+  /* hints */
+  --glide-hint-color: #302505;
+  --glide-hint-border: solid 1px #c38a22;
+  --glide-hint-background: linear-gradient(to bottom, #fff785 0%, #ffc542 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --glide-bg: rgb(26, 27, 37);
+    --glide-fg: white;
+    --glide-url-fg: #3cff7c;
+
+    /* commandline dark mode */
+    --glide-cmdl-bg: rgb(26, 27, 37);
+    --glide-cmdl-fg: #fff;
+
+    /* completions dark mode */
+    --glide-cmplt-fg: #fff;
+    --glide-cmplt-bg: rgb(26, 27, 37);
+
+    /* option focused dark mode */
+    --glide-of-fg: rgb(26, 27, 37);
+    --glide-of-bg: #fff;
+
+    --glide-header-first-bg: #111;
+    --glide-header-second-bg: #111;
+    --glide-header-third-bg: #111;
+    --glide-header-font-size: 1rem;
+    --glide-header-font-weight: 800;
+    --glide-header-border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+  }
+}

@@ -1,0 +1,64 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+glide.jar:
+% content glide %content/ contentaccessible=yes
+
+  content/glide-scripts.js                     (content/dist/glide-scripts.js)
+  content/glide-menubar.js                     (content/dist/glide-menubar.js)
+
+# ES modules
+  content/browser-commandline.mjs              (content/dist/browser-commandline.mjs)
+  content/browser-constants.mjs                (content/dist/browser-constants.mjs)
+  content/browser-autocmds.mjs                 (content/dist/browser-autocmds.mjs)
+  content/browser-excmds.mjs                   (content/dist/browser-excmds.mjs)
+  content/browser-excmds-registry.mjs          (content/dist/browser-excmds-registry.mjs)
+  content/browser-messenger.mjs                (content/dist/browser-messenger.mjs)
+  content/browser-navigation.mjs               (content/dist/browser-navigation.mjs)
+  content/browser-keyboard.mjs                 (content/dist/browser-keyboard.mjs)
+  content/browser-hints.mjs                    (content/dist/browser-hints.mjs)
+  content/browser-api.mjs                      (content/dist/browser-api.mjs)
+  content/browser-dev.mjs                      (content/dist/browser-dev.mjs)
+  content/extensions.mjs                       (content/dist/extensions.mjs)
+  content/sandbox.mjs                          (content/dist/sandbox.mjs)
+  content/sandbox-properties.mjs               (content/sandbox-properties.mjs)
+  content/document-mirror.mjs                  (content/dist/document-mirror.mjs)
+  content/browser.mjs                          (content/dist/browser.mjs)
+  content/motions.mjs                          (content/dist/motions.mjs)
+  content/hinting.mjs                          (content/dist/hinting.mjs)
+  content/text-objects.mjs                     (content/dist/text-objects.mjs)
+  content/docs.mjs                             (content/dist/docs.mjs)
+  content/please.mjs                           (content/dist/please.mjs)
+  content/event-utils.mjs                      (content/dist/event-utils.mjs)
+  content/config-init.mjs                      (content/dist/config-init.mjs)
+  content/utils/dom.mjs                        (content/utils/dist/dom.mjs)
+  content/utils/moz.mjs                        (content/utils/dist/moz.mjs)
+  content/utils/ipc.mjs                        (content/utils/dist/ipc.mjs)
+  content/utils/html.mjs                       (content/utils/dist/html.mjs)
+  content/utils/keys.mjs                       (content/utils/dist/keys.mjs)
+  content/utils/args.mjs                       (content/utils/dist/args.mjs)
+  content/utils/arrays.mjs                     (content/utils/dist/arrays.mjs)
+  content/utils/guards.mjs                     (content/utils/dist/guards.mjs)
+  content/utils/dedent.mjs                     (content/utils/dist/dedent.mjs)
+  content/utils/objects.mjs                    (content/utils/dist/objects.mjs)
+  content/utils/strings.mjs                    (content/utils/dist/strings.mjs)
+  content/utils/promises.mjs                   (content/utils/dist/promises.mjs)
+  content/utils/resources.mjs                  (content/utils/dist/resources.mjs)
+  content/utils/browser-ui.mjs                  (content/utils/dist/browser-ui.mjs)
+
+# default plugins
+  content/plugins/shims.mjs                    (content/plugins/dist/shims.mjs)
+  content/plugins/hints.mjs                    (content/plugins/dist/hints.mjs)
+  content/plugins/keymaps.mjs                  (content/plugins/dist/keymaps.mjs)
+  content/plugins/jumplist.mjs                 (content/plugins/dist/jumplist.mjs)
+  content/plugins/which-key.mjs                (content/plugins/dist/which-key.mjs)
+
+# types
+  content/glide.d.ts                           (content/dist/bundled.compiled.d.ts)
+
+# bundled dependencies
+  content/bundled/markdoc.mjs                  (../../bundled/markdoc.mjs)
+  content/bundled/shiki.mjs                    (../../bundled/shiki.mjs)
+  content/bundled/ts-blank-space.mjs           (../../bundled/ts-blank-space.mjs)
+  content/bundled/dioscuri.mjs                 (../../bundled/dioscuri.mjs)

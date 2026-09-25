@@ -1,0 +1,21 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+[DEFAULT]
+support-files = []
+
+["dist/browser_normal_motions.js"]
+https_first_disabled = true
+
+["dist/browser_visual_motions.js"]
+https_first_disabled = true
+
+["dist/browser_words.js"]
+https_first_disabled = true
+
+["dist/browser_utils.js"]
+https_first_disabled = true
+
+["dist/browser_text_objects.js"]
+https_first_disabled = true

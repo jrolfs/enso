@@ -1,0 +1,37 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+[DEFAULT]
+support-files = [
+  "clipboard_test.html",
+  "key_test.html",
+  "input_test.html",
+  "fullscreen_test.html",
+  "video_test.html",
+  "auto_focus.html",
+]
+
+["dist/browser_mode_input.js"]
+https_first_disabled = true
+
+["dist/browser_keys.js"]
+https_first_disabled = true
+
+["dist/browser_keyseq_display.js"]
+https_first_disabled = true
+
+["dist/browser_fullscreen.js"]
+https_first_disabled = true
+
+["dist/browser_profile_storage.js"]
+https_first_disabled = true
+
+["dist/browser_ignore_mode.js"]
+https_first_disabled = true
+
+["dist/browser_mode_switching.js"]
+https_first_disabled = true
+
+["dist/browser_mode_reset.js"]
+https_first_disabled = true

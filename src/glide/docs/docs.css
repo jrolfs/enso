@@ -1,0 +1,1297 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+/*
+ * note: this is a heavily modified version of the Monospace Web.
+ *
+ * https://owickstrom.github.io/the-monospace-web/
+ */
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("./BerkeleyMono-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-family: "Berkeley Mono", monospace;
+  --line-height: 1.2rem;
+  --border-thickness: 2px;
+  --text-color: #000;
+  --text-color-alt: #666;
+  --background-color: #f5f5f5;
+  --background-color-alt: #eee;
+
+  --font-weight-normal: 500;
+  --font-weight-medium: 600;
+  --font-weight-bold: 800;
+
+  font-family: var(--font-family);
+  font-optical-sizing: auto;
+  font-weight: var(--font-weight-normal);
+  font-style: normal;
+  font-variant-ligatures: none;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #fff;
+    --text-color-alt: #a0aec0;
+    --background-color: rgb(26, 27, 37);
+    --background-color-alt: #111;
+  }
+
+  .shiki, .shiki span, .shiki-inline, .shiki-inline span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+body {
+  flex: 1;
+  padding: 0;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: var(--line-height) 2ch;
+  /* fixes weird selection colouring */
+  line-height: 1.35em;
+  overflow-x: hidden;
+}
+
+@media screen and (max-width: 480px) {
+  :root {
+    font-size: 14px;
+  }
+
+  table {
+    font-size: 0.875rem;
+  }
+
+  pre {
+    margin: calc(var(--line-height) * 0.5) 0;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold);
+  margin: calc(var(--line-height) * 2) 0 var(--line-height);
+  padding: calc(var(--line-height) / 3) 0 calc(var(--line-height) / 3);
+  line-height: var(--line-height);
+  font-family: "Berkeley Mono", monospace !important;
+  font-size: 1rem;
+  text-transform: none !important;
+  font-weight: 800 !important;
+}
+
+h1 {
+  font-size: 1.2rem;
+  line-height: calc(2 * var(--line-height));
+  margin-bottom: calc(var(--line-height) * 2);
+}
+
+h2 {
+  font-size: 1rem;
+}
+
+hr {
+  position: relative;
+  display: block;
+  height: var(--line-height);
+  margin: calc(var(--line-height) * 1.5) 0;
+  border: none;
+  color: var(--text-color);
+}
+
+hr:after {
+  display: block;
+  content: "";
+  position: absolute;
+  top: calc(var(--line-height) / 2 - var(--border-thickness));
+  left: 0;
+  width: 100%;
+  border-top: calc(var(--border-thickness) * 3) double var(--text-color);
+  height: 0;
+}
+
+a {
+  text-decoration-thickness: var(--border-thickness);
+  text-decoration-color: var(--text-color-alt);
+}
+
+a:link, a:visited {
+  color: var(--text-color);
+}
+
+p {
+  margin-bottom: var(--line-height);
+}
+
+strong {
+  font-weight: var(--font-weight-bold);
+}
+
+em {
+  font-style: italic;
+}
+
+sub {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  vertical-align: sub;
+  line-height: 0;
+  width: calc(1ch / 0.75);
+  font-size: 0.75rem;
+}
+
+table {
+  position: relative;
+  top: calc(var(--line-height) / 2);
+  width: calc(round(down, 100%, 1ch));
+  border-collapse: collapse;
+  margin: 0 0 calc(var(--line-height) * 2);
+}
+
+th, td {
+  border: var(--border-thickness) solid var(--text-color);
+  padding: calc(var(--line-height) / 2) calc(1ch - var(--border-thickness) / 2)
+    calc(var(--line-height) / 2 - var(--border-thickness));
+  line-height: var(--line-height);
+  vertical-align: top;
+  text-align: left;
+}
+
+table tbody tr:first-child > * {
+  padding-top: calc(var(--line-height) / 2 - var(--border-thickness));
+}
+
+th {
+  font-weight: 700;
+}
+
+.width-min {
+  width: 0%;
+}
+
+.width-auto {
+  width: 100%;
+}
+
+.header {
+  margin-bottom: calc(var(--line-height) * 2);
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.header tr td:last-child {
+  text-align: right;
+}
+
+img {
+  font-style: italic;
+  color: var(--text-color-alt);
+}
+
+details {
+  padding: calc((var(--line-height) - var(--border-thickness)) / 2) 1ch;
+  margin-bottom: 0;
+}
+
+.heading-anchor {
+  color: var(--text-color-alt) !important;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+*:hover > .heading-anchor {
+  opacity: 1;
+}
+
+summary {
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+details[open], details[open] summary {
+  margin-bottom: var(--line-height);
+}
+
+details summary ::marker {
+  display: inline-block;
+  content: "▶ ";
+  margin: 0;
+}
+
+details[open] summary ::marker {
+  content: "▼ ";
+}
+
+details :last-child {
+  margin-bottom: 0;
+}
+
+pre {
+  white-space: pre;
+  overflow-x: auto;
+  margin: var(--line-height) 0;
+  overflow-y: hidden;
+}
+
+pre, code {
+  font-family: var(--font-family);
+}
+
+figcaption {
+  display: block;
+  font-style: italic;
+  margin-top: var(--line-height);
+}
+
+ul, ol {
+  padding: 0;
+  margin: 0 0 var(--line-height);
+}
+
+ul {
+  list-style-type: square;
+  padding: 0 0 0 2ch;
+}
+
+ol {
+  list-style-type: none;
+  counter-reset: item;
+  padding: 0;
+}
+
+ol ul, ol ol, ul ol, ul ul {
+  padding: 0 0 0 3ch;
+  margin: 0;
+}
+
+ol li:before {
+  content: counters(item, ".") ". ";
+  counter-increment: item;
+}
+
+li {
+  margin: 0;
+  padding: 0;
+}
+
+li::marker {
+  line-height: 0;
+}
+
+::-webkit-scrollbar {
+  height: var(--line-height);
+}
+
+input, button, textarea {
+  border: var(--border-thickness) solid var(--text-color);
+  padding: calc(var(--line-height) / 2 - var(--border-thickness))
+    calc(1ch - var(--border-thickness));
+  margin: 0;
+  font: inherit;
+  font-weight: inherit;
+  height: calc(var(--line-height) * 2);
+  width: auto;
+  overflow: visible;
+  background: var(--background-color);
+  color: var(--text-color);
+  line-height: normal;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+  -webkit-appearance: none;
+}
+
+input[type="checkbox"], input[type="radio"] {
+  display: inline-grid;
+  place-content: center;
+  vertical-align: top;
+  width: 2ch;
+  height: var(--line-height);
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked:before, input[type="radio"]:checked:before {
+  content: "";
+  width: 1ch;
+  height: calc(var(--line-height) / 2);
+  background: var(--text-color);
+}
+
+input[type="radio"], input[type="radio"]:before {
+  border-radius: 100%;
+}
+
+button:focus, input:focus {
+  --border-thickness: 3px;
+  outline: none;
+}
+
+input {
+  width: calc(round(down, 100%, 1ch));
+}
+
+::placeholder {
+  color: var(--text-color-alt);
+  opacity: 1;
+}
+
+::-ms-input-placeholder {
+  color: var(--text-color-alt);
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+button {
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--background-color-alt);
+}
+
+button:active {
+  transform: translate(2px, 2px);
+}
+
+label {
+  display: block;
+  width: calc(round(down, 100%, 1ch));
+  height: auto;
+  line-height: var(--line-height);
+  font-weight: var(--font-weight-medium);
+  margin: 0;
+}
+
+label input {
+  width: 100%;
+}
+
+.tree, .tree ul {
+  position: relative;
+  padding-left: 0;
+  list-style-type: none;
+  line-height: var(--line-height);
+}
+
+.tree ul {
+  margin: 0;
+}
+
+.tree ul li {
+  position: relative;
+  padding-left: 1.5ch;
+  margin-left: 1.5ch;
+  border-left: var(--border-thickness) solid var(--text-color);
+}
+
+.tree ul li:before {
+  position: absolute;
+  display: block;
+  top: calc(var(--line-height) / 2);
+  left: 0;
+  content: "";
+  width: 1ch;
+  border-bottom: var(--border-thickness) solid var(--text-color);
+}
+
+.tree ul li:last-child {
+  border-left-color: transparent;
+}
+
+.tree ul li:last-child:after {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: calc(-1 * var(--border-thickness));
+  content: "";
+  height: calc(var(--line-height) / 2 + var(--border-thickness));
+  border-left: var(--border-thickness) solid var(--text-color);
+}
+
+.grid {
+  --grid-cells: 2; /* fallback for browsers without :has() */
+  display: flex;
+  gap: 1ch;
+  width: calc(
+    round(down, 100%, 1ch * var(--grid-cells) - (1ch * var(--grid-cells) - 1))
+  );
+  margin-bottom: var(--line-height);
+}
+
+.grid > *, .grid > input {
+  flex: 0 0
+    calc(
+      round(
+        down,
+        (100% - 1ch * (var(--grid-cells) - 1)) / var(--grid-cells),
+        1ch
+      )
+    );
+}
+
+.grid:has(> :last-child:nth-child(1)) {
+  --grid-cells: 1;
+}
+
+.grid:has(> :last-child:nth-child(2)) {
+  --grid-cells: 2;
+}
+
+.grid:has(> :last-child:nth-child(3)) {
+  --grid-cells: 3;
+}
+
+.grid:has(> :last-child:nth-child(4)) {
+  --grid-cells: 4;
+}
+
+.grid:has(> :last-child:nth-child(5)) {
+  --grid-cells: 5;
+}
+
+.grid:has(> :last-child:nth-child(6)) {
+  --grid-cells: 6;
+}
+
+.grid:has(> :last-child:nth-child(7)) {
+  --grid-cells: 7;
+}
+
+.grid:has(> :last-child:nth-child(8)) {
+  --grid-cells: 8;
+}
+
+.grid:has(> :last-child:nth-child(9)) {
+  --grid-cells: 9;
+}
+
+.shiki {
+  padding: 1em;
+  border: 1px solid #666;
+  border-width: 1px;
+  border-radius: 5px;
+  position: relative;
+}
+
+.shiki-no-box {
+  padding: 0 !important;
+  border: none !important;
+}
+
+.shiki-inline {
+  white-space: nowrap;
+}
+
+.excmd-heading {
+  text-transform: none !important;
+}
+
+article h1 {
+  padding-top: unset !important;
+  margin-top: unset !important;
+  margin-bottom: unset !important;
+}
+
+.content-container > article {
+  max-width: 50em;
+  padding-left: 1em !important;
+  padding-top: unset !important;
+  margin-top: var(--line-height);
+  margin-left: var(--line-height);
+  margin-right: var(--line-height);
+}
+
+/* remove underlines from heading anchors */
+a:has(> :where(h1, h2, h3, h4, h5, h6)) {
+  text-decoration: none;
+}
+
+/* remove underlines from heading anchors */
+:where(h1, h2, h3, h4, h5, h6)::after {
+  color: var(--text-color-alt);
+  content: " #";
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+:where(h1, h2, h3, h4, h5, h6):hover::after {
+  opacity: 1;
+}
+
+:where(h1, h2, h3, h4, h5, h6):target {
+  animation: highlight-heading 3s ease-out;
+}
+
+@keyframes highlight-heading {
+  0% {
+    background-color: rgba(255, 200, 0, 0.3);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  @keyframes highlight-heading {
+    0% {
+      background-color: rgba(255, 200, 0, 0.15);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+}
+
+.invisible-header {
+  margin: 0 !important;
+}
+.invisible-header::after {
+  display: none !important;
+}
+
+figure {
+  margin: 0 !important;
+}
+
+figure pre {
+  margin-bottom: 0;
+}
+
+figcaption {
+  font-size: 0.85em !important;
+  color: var(--text-color-alt);
+  margin-top: 0.5rem !important;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Only apply background color to standalone <code> elements */
+code:not(pre code) {
+  background-color: #313131;
+  font-weight: 400;
+  color: #e6e6e6;
+}
+
+sup {
+  font-size: 0.75em !important;
+  color: var(--text-color-alt);
+}
+
+sup a {
+  color: var(--text-color-alt) !important;
+  text-decoration: none;
+}
+
+ol li {
+  padding-bottom: 0.5em !important;
+  padding-left: 3ch !important;
+  position: relative;
+}
+
+ol li::before {
+  position: absolute;
+  left: 0;
+}
+
+ol li p {
+  display: inline;
+}
+
+hr {
+  height: 0 !important;
+  border-top: var(--border-thickness) solid var(--text-color) !important;
+}
+
+.code-heading {
+  font-weight: normal !important;
+}
+h2.code-heading {
+  margin-top: 3em !important;
+}
+h3.code-heading {
+  margin-top: 2em !important;
+}
+.code-heading::after {
+  display: none !important;
+}
+
+.main-container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.content-container {
+  display: flex;
+  margin-top: unset;
+  flex: 1;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0px;
+  height: 100vh;
+  min-width: 25ch;
+  width: 20ch;
+  padding: calc(var(--line-height)) 2ch;
+  --border-thickness: 2px;
+  --line-height: 1.2rem;
+  background: var(--background-color);
+  font-family: var(--font-family);
+  overflow-y: auto;
+}
+
+.glide-sidenav-heading {
+  margin-bottom: 0.25em;
+  display: flex;
+  align-items: center;
+}
+
+.glide-sidenav-heading-link {
+  font-size: 1.2em;
+  font-weight: 900;
+  text-decoration: none;
+  flex-grow: 1;
+}
+
+.glide-sidenav-heading-img {
+  width: 1.25em;
+  height: 1.25em;
+  margin-bottom: -0.25em;
+  margin-right: -0.25em;
+}
+
+.glide-sidenav-heading-link:hover {
+  background: linear-gradient(
+    to right,
+    var(--background-color-alt) 80%,
+    transparent 100%
+  );
+}
+
+.sidenav a {
+  text-decoration: none;
+  display: block;
+}
+
+.sidenav a:hover {
+  background: var(--background-color-alt);
+}
+
+.sidenav li.is-active a {
+  color: var(--background-color-alt) !important;
+  background: var(--text-color);
+  font-weight: var(--font-weight-bold);
+}
+
+.github-logo svg {
+  display: block;
+  height: var(--line-height);
+  padding: 1px;
+}
+
+.go-to-def {
+  text-decoration-thickness: 0.05em;
+  text-decoration-style: solid;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+}
+
+.mobile-menu-toggle {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 201;
+  background: var(--background-color-alt);
+  border: 1px solid var(--text-color);
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.mobile-menu-toggle svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.mobile-menu-toggle:hover {
+  background: var(--background-color);
+}
+
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 199;
+}
+
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+}
+
+.copy-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  position: absolute;
+  transition: opacity 0.2s ease;
+}
+
+.copy-button:hover {
+  background: var(--background-color-alt) !important;
+  transition: opacity 0.2s ease;
+  border-radius: 4px;
+}
+
+.copy-button .check-icon {
+  opacity: 0;
+}
+
+.copy-button.copied .copy-icon {
+  opacity: 0;
+}
+
+.copy-button.copied .check-icon {
+  opacity: 1;
+}
+
+/* page-find styling */
+
+.search-button {
+  margin: 0;
+  margin-left: auto;
+  padding: calc(var(--line-height) * 0.25) 1ch;
+  background: var(--background-color-alt);
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
+  border-radius: 6px;
+  height: unset;
+  line-height: 1;
+  font-size: 1rem;
+}
+
+.search-button:hover {
+  background: var(--background-color);
+  border-color: hsla(0, 0%, 100%, 0.2);
+}
+
+/* Pagefind UI customization */
+#search {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: hsla(0, 0%, 0%, 0.6);
+  z-index: 300;
+  padding: 1rem;
+}
+
+.pagefind-ui {
+  max-width: 640px;
+  margin: 4rem auto 0;
+  background: var(--background-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px hsla(0, 0%, 0%, 0.4);
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
+}
+
+.pagefind-ui__search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  background: var(--background-color);
+  border: 1px solid hsla(0, 0%, 100%, 0.2);
+  color: var(--text-color);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.pagefind-ui__search-input:focus {
+  outline: none;
+  border-color: hsla(0, 0%, 0%, 0.4);
+  background: var(--background-color-alt);
+}
+
+/* Style the search input placeholder */
+.pagefind-ui__search-input::placeholder {
+  color: var(--text-color-alt);
+  opacity: 0.7;
+}
+
+/* Style the clear button (x) in the search input */
+.pagefind-ui__search-clear {
+  color: var(--text-color);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.pagefind-ui__search-clear:hover {
+  opacity: 1;
+}
+
+.pagefind-ui__results-area {
+  margin-top: 1rem;
+  max-height: calc(100vh - 12rem);
+  overflow-y: auto;
+}
+
+.pagefind-ui__result {
+  padding: 1rem;
+  border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+  margin: 0;
+  border-radius: 0;
+}
+
+.pagefind-ui__result:last-child {
+  border-bottom: none;
+}
+
+.pagefind-ui__result:hover {
+  background: var(--background-color-alt);
+}
+
+.pagefind-ui__result-title {
+  font-weight: var(--font-weight-bold);
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.pagefind-ui__result-excerpt {
+  margin-top: 0.5rem;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.pagefind-ui__message {
+  color: var(--text-color);
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Style for highlighted text in results */
+.pagefind-ui__result-excerpt mark, .pagefind-ui__result-title mark {
+  background: #404040;
+  color: #ffffff;
+  padding: 0.1rem 0.2rem;
+  border-radius: 2px;
+  font-weight: bold;
+}
+
+/* Add subtle animation for the highlights */
+.pagefind-ui__result-excerpt mark, .pagefind-ui__result-title mark {
+  animation: highlight-fade-in 0.15s ease-in;
+}
+
+@keyframes highlight-fade-in {
+  from {
+    background: transparent;
+    color: inherit;
+  }
+
+  to {
+    background: #404040;
+    color: #ffffff;
+  }
+}
+
+/* Add a subtle transition when hovering over results */
+.pagefind-ui__result {
+  transition: background-color 0.15s ease;
+}
+
+/* Make the title highlights stand out a bit more */
+.pagefind-ui__result-title mark {
+  background: #505050;
+}
+
+/* Add close button */
+.pagefind-ui__close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.pagefind-ui__close-button:hover {
+  opacity: 0.8;
+}
+
+/* Hide Pagefind branding */
+.pagefind-ui__powered-by {
+  display: none;
+}
+
+/* GitHub-style admonitions */
+.admonition {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #999;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.admonition-title {
+  font-weight: var(--font-weight-bold);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  text-transform: lowercase;
+}
+
+.admonition > p:first-of-type {
+  margin-top: 0;
+}
+
+.admonition > *:last-child {
+  margin-bottom: 0;
+}
+
+/* prefixes */
+.admonition-note .admonition-title::before {
+  content: "› ";
+}
+.admonition-tip .admonition-title::before {
+  content: "✓ ";
+}
+.admonition-important .admonition-title::before {
+  content: "! ";
+}
+.admonition-warning .admonition-title::before {
+  content: "⚠ ";
+}
+.admonition-caution .admonition-title::before {
+  content: "⨯ ";
+}
+
+table th, table td {
+  border: 1px solid var(--text-color);
+}
+
+.alpha-warning {
+  /* constrain width to a specific width so that
+   * it doesn't change when content is expanded.
+   *
+   * but this solution feels very hacky...
+   */
+  width: min(100vw - 5em, 50em);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 1.25rem;
+  background-color: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 0.25rem;
+  color: #92400e;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+}
+
+/* Table of Contents sidebar (right side) */
+.toc-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 30ch;
+  padding: calc(var(--line-height) * 2) 1ch calc(var(--line-height)) 1ch;
+  background: var(--background-color);
+  font-family: var(--font-family);
+  overflow-y: auto;
+  border-left: 1px solid var(--background-color-alt);
+}
+
+.toc-sidebar-title {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-color-alt);
+  margin-bottom: calc(var(--line-height) * 0.75);
+  padding-left: 0.5ch;
+}
+
+.toc-sidebar nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.toc-sidebar nav a {
+  display: block;
+  padding: 0.2em 0.5ch;
+  font-size: 0.8rem;
+  color: var(--text-color-alt);
+  text-decoration: none;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  /* Truncate long titles */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toc-sidebar nav a:hover {
+  color: var(--text-color);
+  background: var(--background-color-alt);
+}
+
+.toc-sidebar nav a.toc-active {
+  color: var(--text-color);
+  border-left-color: var(--text-color);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Indentation for heading levels */
+.toc-sidebar nav a[data-level="2"] {
+  padding-left: 1.5ch;
+}
+
+.toc-sidebar nav a[data-level="3"] {
+  padding-left: 3ch;
+  font-size: 0.75rem;
+}
+
+/* Collapsible TOC groups */
+.toc-group {
+  margin-bottom: 0.25em;
+}
+
+.toc-group-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toc-group-header:hover {
+  background: var(--background-color-alt);
+}
+
+.toc-group-icon {
+  font-size: 0.6rem;
+  margin-right: 0.5ch;
+  color: var(--text-color-alt);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+  width: 1ch;
+  text-align: center;
+}
+
+.toc-group-header a {
+  flex: 1;
+  cursor: pointer;
+}
+
+.toc-group-items {
+  margin-left: 1.5ch;
+  margin-top: 0.25em;
+  overflow: hidden;
+}
+
+/**
+ * only show the copy code button when the codeblock
+ * is focused on touch devices, as first of all you're less
+ * likely to need to copy the code block and it can also overlap
+ * with the content in annoying ways.
+ */
+@media (hover: none) and (pointer: coarse) {
+  .copy-button {
+    display: none;
+  }
+
+  .shiki:focus-within .copy-button {
+    display: flex !important;
+  }
+}
+
+/* Hide TOC on smaller screens */
+@media screen and (max-width: 1400px) {
+  .toc-sidebar {
+    display: none;
+  }
+}
+
+/* Update mobile styles */
+@media screen and (max-width: 768px) {
+  /* ensure anchors don't overlap with the menu toggle */
+  [id] {
+    scroll-margin-top: 4em;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+  }
+
+  .main-container {
+    padding-top: 4rem;
+  }
+
+  .content-container {
+    flex-direction: column;
+    max-height: none;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    z-index: 200;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+    overflow-y: auto;
+    padding-top: 4rem; /* Space for close button */
+  }
+
+  .sidebar.mobile-menu-open {
+    left: 0;
+  }
+
+  .mobile-nav-overlay.show {
+    display: block;
+  }
+
+  .content-container > article {
+    max-width: 100%;
+    margin: 0;
+    padding: 1rem !important;
+  }
+
+  .shiki {
+    font-size: 0.875rem;
+    padding: 0.75rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  .pagefind-ui {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .copy-button {
+    padding: 0.25rem;
+    min-width: 2rem;
+    min-height: 2rem;
+  }
+
+  .copy-button svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  ol li {
+    padding-left: 2ch !important;
+  }
+
+  .admonition {
+    padding: 0.75rem;
+    margin: 0.75rem 0;
+  }
+}
+
+/* Extra small devices (phones in portrait) */
+@media screen and (max-width: 480px) {
+  .shiki {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 0.9rem;
+  }
+
+  .content-container > article {
+    padding: 0.75rem !important;
+  }
+
+  .sidebar {
+    width: 90%;
+    max-width: none;
+  }
+
+  .search-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  pre {
+    line-height: 1.2;
+  }
+
+  code:not(pre code) {
+    font-size: 0.875rem;
+    padding: 0.1rem 0.2rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .alpha-warning {
+    background-color: rgba(245, 158, 11, 0.05);
+    border-color: rgba(245, 158, 11, 0.25);
+    color: #d69e2e;
+  }
+}

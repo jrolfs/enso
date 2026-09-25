@@ -1,0 +1,262 @@
+<!--
+   - This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.
+   -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Glide tutor</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+
+    <link rel="stylesheet" href="resource://glide-docs/docs.css" />
+    <link rel="stylesheet" href="resource://glide-docs/reset.css" />
+    <link rel="icon" href="chrome://branding/content/about-logo.png" />
+
+    <link rel="stylesheet" href="./tutor.css" />
+
+    <script src="./tutor.js"></script>
+  </head>
+  <div class="main-container">
+    <div id="search"></div>
+    <div class="content-container">
+      <body>
+        <template id="highlight-template"><span class="shiki-inline"><span
+              style="color: #343b58; --shiki-dark: #c0caf5"
+            ></span></span></template>
+        <article>
+          <pre class="ascii-art">
+   ____  _     ___ ____  _____ 
+  / ___|| |   |_ _|  _ \| ____|
+ | |  _ | |    | || | | |  _|  
+ | |_| || |___ | || |_| | |___ 
+  \____||_____|___|____/|_____|
+          </pre>
+          <p style="text-align: center; max-width: 500px; margin: 0 auto; margin-bottom: 3em">
+            Welcome to the Glide tutorial! If you can't see the introduction, press the <highlight
+            >j</highlight> key until you can.
+          </p>
+
+          <a href="#introduction"><h1 id="introduction" class="tutor-heading">
+              <span>~~~~~</span> introduction <span>~~~~~</span>
+            </h1></a>
+
+          <p>
+            Welcome to the Glide browser! Glide is a bit different from other browsers you may be used to as
+            it is modal based, meaning that pressing the same key combination will perform different
+            operations in different contexts.
+          </p>
+
+          <p>
+            The main modes you'll interact with are <highlight>normal</highlight> mode, <highlight
+            >insert</highlight> mode, and <highlight>hint</highlight> mode.
+          </p>
+
+          <p>
+            <highlight>normal</highlight> mode is where most key mappings are defined and is the default mode
+            when Glide is launched.
+          </p>
+
+          <p>
+            <highlight>insert</highlight> mode is for inserting text into elements, and Glide will
+            automatically switch to it when an input element is focused.
+          </p>
+
+          <p>
+            <highlight>hint</highlight> mode lets you navigate web pages using only your keyboard, more on
+            that later.
+          </p>
+
+          <p>
+            At any time, you can tell which mode Glide is in with the indicator at the top left next to the
+            reload button.
+          </p>
+
+          <a href="#lesson-0"><h1 id="lesson-0" class="tutor-heading">
+              <span>~~~~~</span> lesson 0 <span>~~~~~</span>
+            </h1></a>
+          <p>
+            You can come back to this tutorial at any time by typing <highlight>:tutor</highlight> and
+            pressing <highlight>Enter</highlight> when in <highlight>normal</highlight> mode.
+          </p>
+
+          <p>
+            Get back to <highlight>normal</highlight> mode at any time by pressing <highlight
+            >Escape</highlight>.
+          </p>
+
+          <a href="#lesson-1"><h1 id="lesson-1" class="tutor-heading">
+              <span>~~~~~</span> lesson 1: hints <span>~~~~~</span>
+            </h1></a>
+          <p>Hints are the main way that Glide lets you operate web pages using just your keyboard.</p>
+
+          <p>
+            Press <highlight>f</highlight> to enter <highlight>hint</highlight> mode and Glide will overlay
+            text labels over every hintable element. Typing the label for an element will then focus and click
+            the element.
+          </p>
+
+          <p>Try it now with the button below!</p>
+
+          <div class="pad-to-viewport-end">
+            <p>
+              <button id="hint-next-section-button">
+                Press f and then activate me to go to the next section
+              </button>
+            </p>
+            <div id="hint-next-section-error" hidden>
+              <pre class="ascii-art">
+      naughty naughty
+           ___________    ____
+    ______/   \__//   \__/____\
+  _/   \_/  :           //____\\
+ /|      :  :  ..      /        \
+| |     ::     ::      \        /
+| |     :|     ||     \ \______/
+| |     ||     ||      |\  /  |
+ \|     ||     ||      |   / | \
+  |     ||     ||      |  / /_\ \
+  | ___ || ___ ||      | /  /    \
+   \_-_/  \_-_/ | ____ |/__/      \
+                _\_--_/    \      /
+               /____             /
+              /     \           /
+              \______\_________/
+              </pre>
+            </div>
+          </div>
+
+          <a href="#lesson-2"><h1 id="lesson-2" class="tutor-heading">
+              <span>~~~~~</span> lesson 2: config <span>~~~~~</span>
+            </h1></a>
+          <p>
+            Setup the <a href="resource://glide-docs/config.html#config-evaluation">TypeScript</a>
+            config file by typing <highlight>:config_init home</highlight>, which will create a config file at
+            <config-path-home>~/.config/glide/glide.ts</config-path-home> plus some boilerplate files so that
+            the TypeScript LSP will work.
+          </p>
+          <p>
+            Then execute <highlight>:config_reload</highlight> so that Glide will detect the new config file.
+          </p>
+
+          <p id="config-detected">
+            Config file detected? <span>⨯</span>
+          </p>
+
+          <a href="#lesson-2-1"><h1 id="lesson-2-1" class="tutor-heading">
+              <span>~~~~~</span> lesson 2.1: config editing <span>~~~~~</span>
+            </h1></a>
+          <p>Let's customise the hint label size so that it's a bit bigger.</p>
+          <p>
+            Open the config file by running <highlight>:config_edit</highlight> or opening your editor and
+            navigating to <config-path></config-path>.
+          </p>
+          <p>Then <em>type</em> this in:</p>
+          <fence language="typescript">
+            glide.o.hint_size = "30px";</fence>
+          <p>
+            After saving the file, you should see a notification below the URL bar telling you that the config
+            has been modified, click the reload button or execute <highlight>:config_reload</highlight>.
+          </p>
+
+          <p>
+            Now press <highlight>f</highlight> to enter <highlight>hint</highlight> mode and you should see
+            some <em>very</em> large hint labels! Then press <highlight>Escape</highlight> to exit
+            <highlight>hint</highlight> mode.
+          </p>
+
+          <p>
+            Let's revert the hint size back to a reasonable value, open the config file in your editor again
+            and either delete the code we just added or adjust the value. For reference, the default hint size
+            is 11px.
+          </p>
+
+          <p>
+            For more information on what you can do with the config file, see the <a
+              href="resource://glide-docs/api.html"
+            >API reference</a> for all the APIs or the <a href="resource://glide-docs/cookbook.html"
+            >Cookbook</a> for examples of common things you might want to do.
+          </p>
+
+          <a href="#lesson-3"><h1 id="lesson-3" class="tutor-heading">
+              <span>~~~~~</span> lesson 3: moving around <span>~~~~~</span>
+            </h1></a>
+          <p>
+            In <highlight>normal</highlight> mode if an input element is focused then <highlight
+            >hjkl</highlight> will move the caret, otherwise it can be used to scroll the page.
+          </p>
+          <p>
+            Try moving around and using the input box below to get a feel for it and then hold <highlight
+            >j</highlight> move on to the next lesson
+          </p>
+          <pre class="hjkl">
+                      ↑
+
+                      k
+
+                      │
+                      │
+      ← h ────────────┼──────────── l →
+                      │
+                      │
+
+                      j
+
+                      ↓
+
+┌───────────────── Legend ─────────────────┐
+│ h: move left            l: move right    │
+│ j: move down            k: move up       │
+└──────────────────────────────────────────┘
+          </pre>
+          <input
+            id="lesson-3-input"
+            value="click this then press escape to enter normal mode and use h + l to navigate"
+          >
+          <div class="admonition admonition-tip">
+            <div class="admonition-title">tip</div>
+            <p>
+              You can move the focus back to the page by pressing <highlight>&lt;C-,&gt;</highlight> (ctrl +
+              comma). This should work on all websites, not just this tutorial!
+            </p>
+          </div>
+          <a href="#lesson-4"><h1 id="lesson-4" class="tutor-heading">
+              <span>~~~~~</span> lesson 4: insert mode <span>~~~~~</span>
+            </h1></a>
+          <p>
+            As you may have noticed in lesson 3, when you clicked on the input element, Glide switched to
+            <highlight>insert</highlight> mode. This mode has very few builtin key mappings as it's primary
+            purpose, like the name implies, is to enter text.
+          </p>
+          <p>
+            While in <highlight>normal</highlight> mode, you can manually enter <highlight>insert</highlight>
+            mode by pressing <highlight>i</highlight>. This can be useful for websites that define key maps
+            that conflict with Glide's <highlight>normal</highlight> mode mappings.
+          </p>
+          <div class="admonition admonition-important">
+            <div class="admonition-title">important</div>
+            <p>This tutorial is not complete yet, many aspects are not covered.</p>
+            <p>
+              You should read the <a href="resource://glide-docs/config.html">config docs</a> for details on
+              how to set up a config file.
+            </p>
+            <p>
+              The <a href="resource://glide-docs/cookbook.html">cookbook</a> and all other docs pages should
+              be helpful as well.
+            </p>
+            <p>
+              If you need further help, you can join the <a href="https://glide.zulipchat.com/"
+              >Zulip chat</a>, or post on <a href="https://github.com/glide-browser/glide/discussions"
+              >GitHub discussions</a>.
+            </p>
+          </div>
+        </article>
+      </body>
+    </div>
+  </div>
+</html>

@@ -1,0 +1,184 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.download-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.download-link {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  text-align: center;
+  color: #343b58;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+  --shiki-dark: #c0caf5;
+}
+
+.download-link:hover {
+  background-color: #f0f0f0;
+  border-color: #d0d0d0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .download-link {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+    border-color: #4a5568;
+  }
+
+  .download-link:hover {
+    background-color: #404040 !important;
+    border-color: #606060;
+  }
+}
+
+.platform-switch-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.platform-switch-label {
+  cursor: pointer;
+  padding-left: 0.25em;
+}
+
+#platform-macos:checked ~ .platform-switch label[for="platform-macos"],
+#platform-linux:checked ~ .platform-switch label[for="platform-linux"],
+#platform-windows:checked ~ .platform-switch label[for="platform-windows"] {
+  background-color: #fff;
+  color: #111827;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.15);
+}
+
+download-details {
+  display: none;
+}
+
+#platform-macos:checked ~ download-details[macos], /* dprint-ignore */
+#platform-linux:checked ~ download-details[linux], /* dprint-ignore */
+#platform-windows:checked ~ download-details[windows] {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#download-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+#download-box .platform-switch {
+  flex: 0 0 120px;
+}
+
+download-details pre {
+  margin: 0 !important;
+}
+
+.package-name {
+  font-weight: 500;
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+#demo-video {
+  border: 2px solid #7f7474;
+  border-radius: 8px;
+}
+@media screen and (max-width: 768px) {
+  #demo-video {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+#download, #glide {
+  text-align: center;
+}
+
+#default-keymappings {
+  text-align: center;
+  margin-top: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+#default-keymappings-note {
+  text-align: center;
+  color: grey;
+  line-height: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  #default-keymappings-note {
+    line-height: 1.4rem;
+  }
+}
+
+.keymaps-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 1rem 0;
+}
+
+.keymap-section {
+  border-radius: 8px;
+}
+
+.keymap-section h3 {
+  margin: 0 0 1rem 0;
+}
+
+.keymap-section h3:not(:first-of-type) {
+  margin: 2rem 0 1rem 0;
+}
+
+.keymap-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  align-items: center;
+}
+
+.keymap-key {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  color: #343b58;
+  --shiki-dark: #c0caf5;
+}
+
+.keymap-desc {
+  font-size: 0.9rem;
+}
+
+.mode-note {
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid white;
+  font-style: italic;
+  color: #a0aec0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .keymap-key {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+}
