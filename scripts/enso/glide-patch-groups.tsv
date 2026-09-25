@@ -1,0 +1,128 @@
+# Classification of every patch in Glide's src/ tree, by the upstream Firefox
+# file it targets. Groups listed in glide-excluded-groups.txt are skipped when
+# building the vendor/glide branch.
+#
+# Regenerate the target list after a Glide sync with:
+#   for p in $(find ../glide/src -name '*.patch'); do \
+#     grep -m1 '^diff --git' "$p" | sed 's|^diff --git a/||; s| b/.*||'; done | sort
+#
+# vendor-branches.sh fails if a patch target is missing from this file, so a
+# new upstream patch cannot silently slip into the build unclassified.
+#
+# group	engine path
+
+essential	moz.build
+essential	browser/extensions/moz.build
+essential	browser/actors/moz.build
+essential	browser/base/content/global-scripts.js
+essential	browser/base/content/browser.js
+essential	browser/base/content/browser.js.globals
+essential	browser/components/DesktopActorRegistry.sys.mjs
+essential	modules/libpref/moz.build
+essential	modules/libpref/init/StaticPrefList.yaml
+essential	modules/libpref/init/all.js
+# firefox.js is rewritten by tools/ffprefs before surfer applies patches, so a
+# patch against the pristine file can never match. `#include glide.js` is
+# emitted by ffprefs::prepare_zen_prefs instead. Zen excludes this same file
+# from scripts/recalculate-patches.sh for exactly the same reason.
+generator-managed	browser/app/profile/firefox.js
+essential	toolkit/content/customElements.js
+essential	toolkit/content/widgets.css
+essential	toolkit/themes/shared/desktop-jar.inc.mn
+essential	browser/installer/package-manifest.in
+essential	tools/lint/eslint/eslint-plugin-mozilla/lib/environments/browser-window.mjs
+
+extension-api	toolkit/components/extensions/ExtensionChild.sys.mjs
+extension-api	toolkit/components/extensions/ExtensionContent.sys.mjs
+extension-api	toolkit/components/extensions/ExtensionCommon.sys.mjs
+extension-api	toolkit/components/extensions/Extension.sys.mjs
+extension-api	toolkit/components/extensions/ExtensionParent.sys.mjs
+extension-api	toolkit/components/extensions/WebExtensionPolicy.h
+extension-api	toolkit/components/extensions/ExtensionPreferencesManager.sys.mjs
+extension-api	browser/components/extensions/parent/ext-tabs.js
+extension-api	browser/components/extensions/parent/ext-omnibox.js
+extension-api	browser/components/extensions/parent/ext-sidebarAction.js
+extension-api	toolkit/mozapps/extensions/internal/XPIInstall.sys.mjs
+
+caret	layout/base/nsCaret.cpp
+caret	layout/base/nsCaret.h
+caret	layout/generic/nsIFrame.cpp
+caret	layout/generic/nsFrameSelection.cpp
+
+ui	browser/base/content/navigator-toolbox.inc.xhtml
+ui	browser/base/content/navigator-toolbox.js
+ui	browser/components/customizableui/CustomizableUI.sys.mjs
+ui	browser/themes/shared/toolbarbuttons.css
+ui	browser/base/content/browser-menubar.inc.xhtml
+ui	browser/components/customizableui/content/panelUI.inc.xhtml
+ui	browser/components/preferences/preferences.xhtml
+ui	toolkit/modules/AppMenuNotifications.sys.mjs
+ui	browser/locales/en-US/browser/browserContext.ftl
+ui	browser/locales/en-US/browser/appmenu.ftl
+ui	browser/locales/en-US/browser/menubar.ftl
+ui	browser/locales/en-US/browser/appMenuNotifications.ftl
+
+findbar	toolkit/content/widgets/findbar.js
+
+devtools	devtools/server/actors/webconsole.js
+
+gemini	browser/components/moz.build
+gemini	toolkit/components/reader/Readerable.js
+gemini	toolkit/components/reader/AboutReader.sys.mjs
+
+buildinfra	build/mach_initialize.py
+buildinfra	python/mach/mach/site.py
+buildinfra	python/mach/mach/util.py
+buildinfra	third_party/python/vsdownload/vsdownload.py
+
+sdk-pin	build/moz.configure/toolchain.configure
+
+branding	browser/confvars.sh
+branding	browser/moz.configure
+branding	mobile/ios/moz.configure
+branding	mobile/android/moz.configure
+branding	toolkit/moz.configure
+branding	toolkit/modules/moz.build
+branding	toolkit/modules/AppConstants.sys.mjs
+branding	toolkit/mozapps/extensions/AddonManager.sys.mjs
+branding	toolkit/mozapps/extensions/internal/AddonUpdateChecker.sys.mjs
+branding	toolkit/modules/UpdateUtils.sys.mjs
+branding	browser/base/content/aboutDialog.js
+branding	browser/base/content/aboutDialog.xhtml
+branding	browser/locales/en-US/browser/aboutDialog.ftl
+branding	toolkit/content/aboutSupport.xhtml
+branding	toolkit/content/aboutSupport.js
+branding	toolkit/locales/en-US/toolkit/about/aboutSupport.ftl
+branding	toolkit/xre/nsXREDirProvider.cpp
+branding	toolkit/xre/nsAppRunner.cpp
+branding	toolkit/components/remote/nsDBusRemoteClient.cpp
+branding	toolkit/components/extensions/NativeManifests.sys.mjs
+branding	netwerk/protocol/http/moz.build
+branding	security/mac/hardenedruntime/production/firefox.browser.xml
+branding	build/moz.build
+branding	build/application.ini.in
+branding	devtools/client/aboutdebugging/src/actions/runtimes.js
+branding	tools/signing/macos/mach_commands.py
+
+demozilla	browser/components/asrouter/modules/OnboardingMessageProvider.sys.mjs
+demozilla	browser/components/protections/ContentBlockingPrefs.sys.mjs
+demozilla	services/settings/dumps/main/search-config-v2.json
+demozilla	toolkit/components/search/SearchEngineSelector.sys.mjs
+
+testing	testing/mochitest/browser-test.js
+testing	testing/mochitest/runtests.py
+testing	testing/mochitest/ignorePrefs.json
+testing	testing/mochitest/BrowserTestUtils/BrowserTestUtils.sys.mjs
+testing	testing/mochitest/tests/SimpleTest/EventUtils.js
+testing	testing/specialpowers/content/SpecialPowersChild.sys.mjs
+
+typecheck	tools/@types/generated/lib.gecko.dom.d.ts
+typecheck	tools/@types/generated/lib.gecko.xpcom.d.ts
+typecheck	tools/@types/subs/AppConstants.sys.d.mts
+typecheck	toolkit/components/extensions/types/ext-tabs-base.d.ts
+typecheck	toolkit/modules/JSONFile.sys.mjs
+typecheck	toolkit/modules/subprocess/subprocess_common.sys.mjs
+typecheck	toolkit/components/search/UserSearchEngine.sys.mjs
+typecheck	netwerk/base/NetUtil.sys.mjs
+typecheck	browser/components/profiles/SelectableProfileService.sys.mjs
+typecheck	devtools/server/actors/watcher/browsing-context-helpers.sys.mjs

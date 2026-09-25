@@ -1,0 +1,48 @@
+# Glide patch groups to skip when building the vendor/glide branch.
+# One group name per line; '#' comments a line out, re-enabling that group.
+# Group membership is defined in glide-patch-groups.tsv.
+
+# Glide's own identity. Zen owns vendor, profile paths, DBus names, update
+# host, macOS entitlements, UA spoofing and the *_FIREFOX_VERSION plumbing.
+# These merge cleanly precisely because Zen does not patch most of them, which
+# makes a clean merge the wrong answer: keeping them gives a browser that
+# writes to a "Glide Browser" profile directory.
+branding
+
+# Glide's pref philosophy (betterfox, telemetry stripping, search-config
+# edits). Zen declares prefs as YAML under prefs/ and compiles them with
+# tools/ffprefs, so Glide's versions would fight that pipeline.
+demozilla
+
+# Glide's mochitest harness. Its ~15.8k lines of tests assert against stock
+# Firefox chrome and would fail wholesale against Zen's UI. Re-enable once the
+# graft is stable and the suite has been triaged.
+testing
+
+# JSDoc widening and vendored .d.ts files that exist only to satisfy Glide's
+# `tsc` run over Firefox sources. We are not running that check.
+typecheck
+
+# Files a generator rewrites before patches are applied, so a patch against the
+# pristine file can never match. Currently just browser/app/profile/firefox.js,
+# owned by tools/ffprefs, which now emits `#include glide.js` next to
+# `#include zen.js`.
+generator-managed
+
+# Glide pins the macOS SDK to 26.0. Our devenv supplies apple-sdk 26.5, which
+# is also what Zen's release mozconfig scans for.
+sdk-pin
+
+# ---------------------------------------------------------------------------
+# Uncomment to drop the vim block/underline caret.
+#
+# This is the build-time escape hatch for the four C++ patches (nsCaret.cpp,
+# nsCaret.h, nsIFrame.cpp, nsFrameSelection.cpp). nsCaret.cpp is the single
+# most volatile patch in the set, so expect it to be the first casualty of a
+# Firefox version bump. Excluding it degrades gracefully: browser.mts still
+# sets glide.caret.style on every mode change, nothing reads it, and the caret
+# renders as a normal line.
+#
+# For a runtime toggle instead, set the pref glide.vimcaret=false. It gates
+# every C++ call site, so no rebuild is needed.
+# caret

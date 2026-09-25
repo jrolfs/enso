@@ -1,0 +1,46 @@
+diff --git a/src/glide/browser/base/content/browser-excmds.mts b/src/glide/browser/base/content/browser-excmds.mts
+index 8de7034..c4cd1f1 100644
+--- a/src/glide/browser/base/content/browser-excmds.mts
++++ b/src/glide/browser/base/content/browser-excmds.mts
+@@ -109,7 +109,19 @@ class GlideExcmdsClass {
+     try {
+       await this.#execute(command, {
+         ...props,
+-        args: { ...this.#parse_args(command), tab_id: GlideBrowser.active_tab_id, ...props?.args },
++        // `tab_id` is lazy because most excmds never read it, and resolving it
++        // eagerly makes every excmd fail whenever the selected tab has no
++        // WebExtension wrapper. Zen hits that routinely: `zen-empty-tab` is
++        // selected at startup and transiently on each workspace switch, and
++        // Zen deliberately hides those tabs from the extension layer, so
++        // otherwise even `mode_change normal` throws.
++        args: {
++          ...this.#parse_args(command),
++          get tab_id() {
++            return GlideBrowser.active_tab_id;
++          },
++          ...props?.args,
++        },
+       });
+     } catch (err) {
+       GlideBrowser._log.error(err);
+diff --git a/src/glide/browser/base/content/browser.mts b/src/glide/browser/base/content/browser.mts
+index ea1fbcb..533d05b 100644
+--- a/src/glide/browser/base/content/browser.mts
++++ b/src/glide/browser/base/content/browser.mts
+@@ -868,7 +868,15 @@ class GlideBrowserClass {
+         GlideBrowser._log.debug("onLocationChange - clearing buffer");
+         await GlideBrowser.clear_buffer();
+ 
+-        await GlideBrowser.#invoke_urlenter_autocmd(location);
++        // Zen selects a `zen-empty-tab` at startup and transiently on every
++        // workspace switch, and deliberately hides those from the extension
++        // layer, so no wrapper exists for them. `UrlEnter` exposes `tab_id`,
++        // so firing it for an unaddressable tab only throws inside whatever
++        // autocmd reads it.
++        const selected = gBrowser?.selectedTab;
++        if (selected && GlideBrowser.extension?.tabManager?.getWrapper?.(selected)) {
++          await GlideBrowser.#invoke_urlenter_autocmd(location);
++        }
+       },
+     });
+   }
