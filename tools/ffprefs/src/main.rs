@@ -301,12 +301,24 @@ fn write_preferences(prefs: &[Preference]) {
 }
 
 fn prepare_zen_prefs() {
-    // Add `#include zen.js` to the bottom of the firefox.js file if it doesn't exist
-    let line = "#include zen.js";
+    // Add the includes to the bottom of the firefox.js file if they don't exist.
+    //
+    // glide.js is listed here rather than shipped as a patch because this
+    // function rewrites firefox.js before surfer applies patches, so a patch
+    // against pristine firefox.js no longer matches by the time it is applied.
+    // Zen's own scripts/recalculate-patches.sh excludes firefox.js for the
+    // same reason.
+    let lines = ["#include zen.js", "#include glide.js"];
     let firefox_prefs_path = get_config_path().join(FIREFOX_PREFS);
     if let Ok(mut content) = fs::read_to_string(&firefox_prefs_path) {
-        if !content.contains(line) {
-            content.push_str(format!("\n{}\n", line).as_str());
+        let mut changed = false;
+        for line in lines {
+            if !content.contains(line) {
+                content.push_str(format!("\n{}\n", line).as_str());
+                changed = true;
+            }
+        }
+        if changed {
             // Ensure the file ends with a newline
             fs::write(&firefox_prefs_path, content).expect("Failed to write firefox prefs");
         }
