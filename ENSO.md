@@ -57,6 +57,11 @@ warns when a newer Firefox exists. Ignore that and do not run `surfer update`:
 Firefox bumps arrive with Zen upstream, which also updates its patches for the
 new version.
 
+Do not re-run `npm run download` on an imported `engine/`. It skips the
+download but still discards and rewrites `browser/extensions/moz.build`, which
+drops the `glide` entry that import patched in, and Glide then fails at runtime
+with "Expected to find a web extension with ID: `glide-internal@mozilla.org`".
+
 `materialize-overlay.sh` is required, not optional. It copies the `src/`
 overlay into `engine/` as real files so that content-process reads stay inside
 the sandbox's allowed paths. Without it the browser builds but every

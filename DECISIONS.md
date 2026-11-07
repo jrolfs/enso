@@ -480,15 +480,6 @@ mach directly is safe once a build has been configured once.
   `#include glide.js` through Zen's own `prefs/` pipeline instead of editing
   `glide.js`.
 
-- **Symlink vs content process (unresolved).** Glide *copies* `src/glide` into
-  `engine/` with an explicit comment that content processes cannot reach
-  outside `engine/`; Zen symlinks everything. Zen has never had to care because
-  it ships no content-process JS from its overlay, but `GlideHandlerChild` is
-  exactly that. If it fails, graft Glide's `copy-src.mts` watcher alongside
-  surfer's symlinker.
-
-- **Nothing is committed.** Standing instruction is to commit only on request.
-
 ---
 
 ## Sync workflow
