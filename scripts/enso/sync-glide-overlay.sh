@@ -6,21 +6,23 @@
 # src/ overlay. This script handles the second kind. Zen never writes to any of
 # these paths, so they copy in without conflict.
 #
-# The synced Glide commit is recorded in .glide-sync-base. To pull a later
-# Glide release with real 3-way merge semantics rather than a blind overwrite:
-#
-#   git fetch glide
-#   git diff "$(cat .glide-sync-base)" glide/main -- src/glide | git apply -3
-#
-# Use that in preference to re-running this script once local adaptations
-# exist, or they will be clobbered.
+# The copy overwrites, which is safe because Enso's changes to Glide's files
+# live in glide-fixes/ and are applied to the checkout by build-glide.sh. Edit
+# them there, never in src/ directly, or the next sync reverts them.
 
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-GLIDE="${GLIDE_SRC:-$(cd "$ROOT/.." && pwd)/glide}"
+source "$ROOT/scripts/enso/lib.sh"
 
-[ -d "$GLIDE/src" ] || { echo "no Glide checkout at $GLIDE (override with GLIDE_SRC=)" >&2; exit 1; }
+[ -d "$GLIDE/src" ] || { echo "no Glide checkout at $GLIDE; run 'git submodule update --init'" >&2; exit 1; }
+
+for fix in "$ROOT"/scripts/enso/glide-fixes/*.patch; do
+  git -C "$GLIDE" apply --reverse --check "$fix" 2>/dev/null \
+    || { echo "${fix#"$ROOT"/} is not applied to $GLIDE; run build-glide.sh first" >&2; exit 1; }
+done
+
+[ -d "$GLIDE/src/glide/bundled" ] || { echo "Glide is not built; run build-glide.sh first" >&2; exit 1; }
 
 # Path prefixes to skip, keyed to excluded groups in glide-excluded-groups.txt.
 # Only the `testing` group ships overlay files; every other excluded group is
@@ -59,11 +61,18 @@ while IFS= read -r abs; do
   copied=$((copied + 1))
 done < <(find "$GLIDE/src" \( -type f -o -type l \) ! -name '*.patch')
 
-git -C "$GLIDE" rev-parse HEAD > "$ROOT/.glide-sync-base"
+# A file Glide deleted since the committed pin would otherwise linger in src/
+# and stay in the build. Patches are left to export-patches.sh.
+removed=0
+if pinned=$(git -C "$ROOT" rev-parse --verify --quiet HEAD:vendor/glide); then
+  while IFS= read -r path; do
+    rel="${path#src/}"
+    should_skip "$rel" && continue
+    if [ -e "$ROOT/src/$rel" ] || [ -L "$ROOT/src/$rel" ]; then
+      rm "$ROOT/src/$rel"
+      removed=$((removed + 1))
+    fi
+  done < <(git -C "$GLIDE" diff --name-only --no-renames --diff-filter=D "$pinned" HEAD -- src ':!*.patch')
+fi
 
-echo "copied $copied file(s), skipped $skipped"
-echo "glide base recorded: $(cut -c1-12 < "$ROOT/.glide-sync-base")"
-echo
-echo "note: src/glide/**/dist/ and src/glide/bundled/ are build outputs and are"
-echo "      not in Glide's git tree. Run Glide's build-ts.mts and bundle.mts"
-echo "      before building, or chrome:// URLs in jar.mn will not resolve."
+echo "copied $copied, skipped $skipped, removed $removed file(s) for glide $(git -C "$GLIDE" rev-parse --short HEAD)"

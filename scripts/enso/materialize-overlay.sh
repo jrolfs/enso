@@ -42,9 +42,9 @@ while IFS= read -r src_file; do
   rel="${src_file#"$SRC"/}"
   dest="$ENGINE/$rel"
 
-  # Only touch paths surfer actually overlays. A src/ file with no engine/
-  # counterpart is not part of the build.
-  [ -e "$dest" ] || [ -L "$dest" ] || continue
+  # src/browser/actors/ holds Glide's relative symlinks into
+  # glide/browser/actors/dist/, which only resolve once Glide is built.
+  [ -e "$src_file" ] || { echo "src/$rel is a dangling symlink; run build-glide.sh and sync-glide-overlay.sh" >&2; exit 1; }
 
   # A symlink still resolving inside engine/ is fine for the sandbox, but a
   # symlink out of tree is not, and a stale copy needs refreshing.
@@ -52,13 +52,24 @@ while IFS= read -r src_file; do
     target=$(readlink -f "$dest" 2>/dev/null || true)
     case "$target" in "$ENGINE"/*) unchanged=$((unchanged + 1)); continue ;; esac
     rm "$dest"
-  elif cmp -s "$src_file" "$dest"; then
-    unchanged=$((unchanged + 1))
-    continue
+  elif [ -e "$dest" ]; then
+    if cmp -s "$src_file" "$dest"; then
+      unchanged=$((unchanged + 1))
+      continue
+    fi
+  else
+    # Surfer overlays every non-patch file in src/, but only during import, so
+    # anything generated since then (Glide's dist/ output) has no engine/
+    # counterpart yet. Add it the way surfer would, including the
+    # engine/.gitignore entry that keeps vendor-branches.sh's `git clean` off it.
+    mkdir -p "$(dirname "$dest")"
+    grep -qxF "$rel" "$ENGINE/.gitignore" || printf '\n%s' "$rel" >> "$ENGINE/.gitignore"
   fi
 
-  cp -p "$src_file" "$dest"
+  # -L because some src/ entries are themselves symlinks, and the copy must
+  # hold content for the sandbox to read it.
+  cp -pL "$src_file" "$dest"
   copied=$((copied + 1))
-done < <(find "$SRC" -type f ! -name '*.patch')
+done < <(find "$SRC" \( -type f -o -type l \) ! -name '*.patch' ! -path '*/node_modules/*')
 
 echo "copied $copied file(s), $unchanged already current"

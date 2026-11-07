@@ -3,7 +3,7 @@
 # building the vendor/glide branch.
 #
 # Regenerate the target list after a Glide sync with:
-#   for p in $(find ../glide/src -name '*.patch'); do \
+#   for p in $(find vendor/glide/src -name '*.patch'); do \
 #     grep -m1 '^diff --git' "$p" | sed 's|^diff --git a/||; s| b/.*||'; done | sort
 #
 # vendor-branches.sh fails if a patch target is missing from this file, so a

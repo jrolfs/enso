@@ -1,0 +1,6 @@
+[submodule "vendor/glide"]
+	path = vendor/glide
+	url = https://github.com/glide-browser/glide.git
+	# build-glide.sh applies scripts/enso/glide-fixes/ to the checkout, so it
+	# is always dirty. A moved commit still shows in `git status`.
+	ignore = dirty

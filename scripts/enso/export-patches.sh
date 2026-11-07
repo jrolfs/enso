@@ -2,10 +2,12 @@
 # Regenerate src/**/*.patch from the merged engine/ enso branch.
 #
 # The vendor-branch merge lives in git, but the build reads src/**/*.patch, so
-# the merge result has to be written back out. Only files that the merge
-# actually changed relative to vendor/zen are exported; the rest of Zen's
-# patch set is left untouched so this never rewrites 256 files it did not
-# need to.
+# the merge result has to be written back out. Every patch is first reset to
+# Zen's own, then the files the merge changed relative to vendor/zen are
+# exported over them. That makes the patch set a function of the Zen commit
+# and the enso branch alone: a merged patch whose Glide side has gone reverts
+# to Zen's, and a Glide-only patch that Glide dropped is deleted. Enso carries
+# no Firefox patches of its own, which is what makes the reset safe.
 #
 # Patch filenames follow surfer's convention (dots in the basename become
 # dashes), because surfer's own `export` will overwrite these in place later.
@@ -13,6 +15,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+source "$ROOT/scripts/enso/lib.sh"
 ENGINE="$ROOT/engine"
 REPORTS="$ROOT/.enso-reports"
 
@@ -38,6 +41,17 @@ patch_path_for() {
     echo "$ROOT/src/$dir/$base.patch"
   fi
 }
+
+ZEN_REF=$(zen_ref)
+ZEN_SRC=$(mktemp -d)
+trap 'rm -rf "$ZEN_SRC"' EXIT
+git -C "$ROOT" archive "$ZEN_REF" src | tar -x -C "$ZEN_SRC"
+
+find "$ROOT/src" -name '*.patch' -delete
+while IFS= read -r rel; do
+  mkdir -p "$ROOT/$(dirname "$rel")"
+  cp -p "$ZEN_SRC/$rel" "$ROOT/$rel"
+done < <(cd "$ZEN_SRC" && find src -name '*.patch')
 
 written=0
 while IFS= read -r target; do
