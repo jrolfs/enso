@@ -1,5 +1,5 @@
 diff --git a/toolkit/mozapps/extensions/internal/XPIInstall.sys.mjs b/toolkit/mozapps/extensions/internal/XPIInstall.sys.mjs
-index 536eff2df3838e411b966886c2fe7b81e7a4ff17..b8ff2b9bf87d36d7406770fb97bb633bb7aaf829 100644
+index ca1a16c6da69c888b49ff1d58eb4ad53befdcd41..b0b408973620c78c0c7f97d99a50191d8d2c1f06 100644
 --- a/toolkit/mozapps/extensions/internal/XPIInstall.sys.mjs
 +++ b/toolkit/mozapps/extensions/internal/XPIInstall.sys.mjs
 @@ -985,7 +985,7 @@ function escapeAddonURI(aAddon, aUri, aUpdateType, aAppVersion) {

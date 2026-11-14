@@ -85,6 +85,16 @@ essentially nothing, so there is no reason to rebase Glide or wait for Zen's
   `DesktopActorRegistry.sys.mjs` (**essential** — the actor registration behind
   keydown interception). The latter should get a clean re-export against 156.
 
+### Move to Firefox 159.0.1 with Glide 0.1.65a
+
+Superseded the 156 pin on 2026-11-07, in the first run of the scripted sync.
+Zen `dev` had moved to 159.0.1, and Glide 0.1.65a targets 159.0b4, so the two
+now sit on the same Firefox release. On pristine 159.0.1 all 273 of Zen's
+patches and all 51 active Glide patches applied cleanly, with no fuzz, so the
+`DesktopActorRegistry.sys.mjs` re-export above is no longer needed. The engine
+merge hit one conflict, `CustomizableUI.sys.mjs`, which rerere replayed, and
+`enso-glide-fixes.patch` applied unchanged.
+
 ---
 
 ## What is excluded, and why

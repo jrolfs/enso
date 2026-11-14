@@ -1,8 +1,8 @@
 diff --git a/browser/components/DesktopActorRegistry.sys.mjs b/browser/components/DesktopActorRegistry.sys.mjs
-index 61d0449fc878421f2bc2ddad37d3429cd0d54f49..119cbd141f3048ebd30e173f3225fdb92f0f38fc 100644
+index 4ceb32d5517d39074842e78c4f48b06c48e0881d..82d57da6a62f9b53e3b2274d191c3414b979f045 100644
 --- a/browser/components/DesktopActorRegistry.sys.mjs
 +++ b/browser/components/DesktopActorRegistry.sys.mjs
-@@ -43,6 +43,13 @@ let JSPROCESSACTORS = {
+@@ -43,6 +43,15 @@ let JSPROCESSACTORS = {
      remoteTypes: ["parent", "privilegedabout"],
    },
  
@@ -11,12 +11,14 @@ index 61d0449fc878421f2bc2ddad37d3429cd0d54f49..119cbd141f3048ebd30e173f3225fdb9
 +      esModuleURI: "resource:///actors/GeminiProtocolParent.sys.mjs",
 +    },
 +    includeParent: true,
++    // gemini pages are loaded in regular web content processes
++    safeForUntrustedWebProcess: true,
 +  },
 +
    RefreshBlockerObserver: {
      child: {
        esModuleURI: "resource:///actors/RefreshBlockerChild.sys.mjs",
-@@ -96,6 +103,54 @@ let JSWINDOWACTORS = {
+@@ -96,6 +105,58 @@ let JSWINDOWACTORS = {
      remoteTypes: ["parent"],
    },
  
@@ -33,6 +35,8 @@ index 61d0449fc878421f2bc2ddad37d3429cd0d54f49..119cbd141f3048ebd30e173f3225fdb9
 +    matches: ["resource://glide-docs/dynamic/mappings.html"],
 +    allFrames: false,
 +    includeChrome: false,
++    // resource:// pages are loaded in web content processes
++    safeForUntrustedWebProcess: true,
 +  },
 +  GlideTutor: {
 +    parent: {
@@ -48,6 +52,8 @@ index 61d0449fc878421f2bc2ddad37d3429cd0d54f49..119cbd141f3048ebd30e173f3225fdb9
 +    matches: ["resource://glide-tutor/*"],
 +    allFrames: false,
 +    includeChrome: false,
++    // resource:// pages are loaded in web content processes
++    safeForUntrustedWebProcess: true,
 +  },
 +
 +  GlideHandler: {
@@ -70,4 +76,4 @@ index 61d0449fc878421f2bc2ddad37d3429cd0d54f49..119cbd141f3048ebd30e173f3225fdb9
 +
    AboutLogins: {
      parent: {
-       esModuleURI: "resource:///actors/AboutLoginsParent.sys.mjs",
+       esModuleURI:

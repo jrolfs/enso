@@ -1,5 +1,5 @@
 diff --git a/moz.build b/moz.build
-index 2eb5922b24cdec1e0d2f6e6d21101be1fc424687..75a173b086be99fc1e2612ad44dafd740533e9f6 100644
+index 9e8ba36810e07939ac08d1223d1cf00ef260c915..7a97cd6e560dd1f0ff186f1609331e77ad5781eb 100644
 --- a/moz.build
 +++ b/moz.build
 @@ -276,6 +276,7 @@ if CONFIG["ENABLE_CLANG_PLUGIN"]:

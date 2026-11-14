@@ -1,5 +1,5 @@
 diff --git a/toolkit/components/extensions/WebExtensionPolicy.h b/toolkit/components/extensions/WebExtensionPolicy.h
-index 0615e3e306d33828da0e6e5cb0f9eaabb248b7b6..ce24acb4015670d2ab9a386f6fb6e208cff116d3 100644
+index b379b8674eab422a0a201022f61860a1da4e9647..943c2dec0ec31de94c1b2106c37c8bbd2ebd8385 100644
 --- a/toolkit/components/extensions/WebExtensionPolicy.h
 +++ b/toolkit/components/extensions/WebExtensionPolicy.h
 @@ -114,6 +114,16 @@ class WebExtensionPolicyCore final {

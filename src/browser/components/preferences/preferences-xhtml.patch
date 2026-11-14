@@ -1,5 +1,5 @@
 diff --git a/browser/components/preferences/preferences.xhtml b/browser/components/preferences/preferences.xhtml
-index 6520ab6d3b807d26ee17e0a8f5e455fcceef0510..fc56e4096f32f6411318aef87d3e843a7c5ce593 100644
+index e8da75f2c27e312e0170520959d3daf883f56048..a27692cc006da6845a42c8434c9614f4ffe5adb8 100644
 --- a/browser/components/preferences/preferences.xhtml
 +++ b/browser/components/preferences/preferences.xhtml
 @@ -39,6 +39,8 @@
@@ -35,7 +35,7 @@ index 6520ab6d3b807d26ee17e0a8f5e455fcceef0510..fc56e4096f32f6411318aef87d3e843a
 +        data-l10n-id="pane-zen-tabs-title">
 +      </html:moz-page-nav-button>
 +      <html:moz-page-nav-button id="category-zen-CKS"
-+        view="paneZenCKS"
++        href="about:keyboard"
 +        iconsrc="chrome://browser/skin/preferences/category-accessibility.svg"
 +        data-l10n-id="pane-zen-CKS-title">
 +      </html:moz-page-nav-button>
@@ -47,12 +47,11 @@ index 6520ab6d3b807d26ee17e0a8f5e455fcceef0510..fc56e4096f32f6411318aef87d3e843a
        <html:moz-page-nav-button id="category-sync"
          hidden="true"
          view="paneSync"
-@@ -251,6 +275,10 @@
+@@ -257,6 +281,9 @@
  #include privacy.inc.xhtml
  #include sync.inc.xhtml
  #include moreFromMozilla.inc.xhtml
 +#include zenLooksAndFeel.inc.xhtml
-+#include zenKeyboardShortcuts.inc.xhtml
 +#include zenTabsManagement.inc.xhtml
 +#include zenMarketplace.inc.xhtml
          </vbox>

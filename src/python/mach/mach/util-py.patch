@@ -1,8 +1,8 @@
 diff --git a/python/mach/mach/util.py b/python/mach/mach/util.py
-index b225876a3be3f921c8501209288343c61c2959c8..4a9a74304c4d15fcfec5ecf1572cde32987281ff 100644
+index 219524a1c565b0511b0161858ba22a26ec8f29bc..4417f88485a91c09b2e217f1c62f06c99f4f0d2a 100644
 --- a/python/mach/mach/util.py
 +++ b/python/mach/mach/util.py
-@@ -31,7 +31,8 @@ def setenv(key, value):
+@@ -33,7 +33,8 @@ def setenv(key, value):
  
  
  def get_state_dir(
@@ -12,7 +12,7 @@ index b225876a3be3f921c8501209288343c61c2959c8..4a9a74304c4d15fcfec5ecf1572cde32
  ):
      """Obtain path to a directory to hold state.
  
-@@ -67,7 +68,8 @@ def get_state_dir(
+@@ -69,7 +70,8 @@ def get_state_dir(
      if not state_dir.is_dir():
          # We create the srcdir here rather than 'mach_initialize.py' so direct
          # consumers of this function don't create the directory inconsistently.
@@ -22,7 +22,7 @@ index b225876a3be3f921c8501209288343c61c2959c8..4a9a74304c4d15fcfec5ecf1572cde32
          state_dir.mkdir(mode=0o770, parents=True)
          # Save the topsrcdir that this state dir corresponds to so we can clean
          # it up in the event its srcdir was deleted.
-@@ -101,9 +103,9 @@ def get_global_machrc_path():
+@@ -133,9 +135,9 @@ def get_global_machrc_path():
      return Path(get_state_dir()) / "machrc"
  
  

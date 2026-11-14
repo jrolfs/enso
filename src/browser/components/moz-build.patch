@@ -1,8 +1,8 @@
 diff --git a/browser/components/moz.build b/browser/components/moz.build
-index 63cfb33a3b11473e00b8f211e34e8e89ffc25275..c50a774e29293e1dcfe565c76255c781758ff68c 100644
+index 9a955225780298c2d7cb1233e36b5b656c5c9050..bde21c95c3dc9a395da9e7f512fe1a7e120f6096 100644
 --- a/browser/components/moz.build
 +++ b/browser/components/moz.build
-@@ -41,6 +41,7 @@ DIRS += [
+@@ -39,6 +39,7 @@ DIRS += [
      "enterprisepolicies",
      "extensions",
      "firefoxview",

@@ -1,5 +1,5 @@
 diff --git a/layout/generic/nsFrameSelection.cpp b/layout/generic/nsFrameSelection.cpp
-index 91d2715b0cbc82b6a53e690dfe89c48be467bde5..cc0deb96ca790de54d862538e19e20aaeac8c38b 100644
+index be22915490c18c5340b9fb8c86047a3e2234b7f2..34782bb4e801f8accc57b283e8a9082b33f30c6d 100644
 --- a/layout/generic/nsFrameSelection.cpp
 +++ b/layout/generic/nsFrameSelection.cpp
 @@ -564,7 +564,12 @@ nsresult nsFrameSelection::DesiredCaretPos::FetchPos(
@@ -16,7 +16,7 @@ index 91d2715b0cbc82b6a53e690dfe89c48be467bde5..cc0deb96ca790de54d862538e19e20aa
    if (!caretFrame) {
      return NS_ERROR_FAILURE;
    }
-@@ -1935,7 +1940,12 @@ nsresult nsFrameSelection::PageMove(bool aForward, bool aExtend,
+@@ -1937,7 +1942,12 @@ nsresult nsFrameSelection::PageMove(bool aForward, bool aExtend,
      }
  
      nsRect caretPos;

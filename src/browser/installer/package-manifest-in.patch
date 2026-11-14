@@ -1,5 +1,5 @@
 diff --git a/browser/installer/package-manifest.in b/browser/installer/package-manifest.in
-index 46725ca0498537098daebed34a5e503306e44882..b7b967dd2268e630b9951cf6d463751f685be37b 100644
+index 04bd23515eb4505cee3d9752db6388c4961ec315..1bc65fd3d324996fee68f0569e84d8a3e7617925 100644
 --- a/browser/installer/package-manifest.in
 +++ b/browser/installer/package-manifest.in
 @@ -249,6 +249,11 @@

@@ -1,8 +1,8 @@
 diff --git a/modules/libpref/init/all.js b/modules/libpref/init/all.js
-index 37cba58e2091b617345453ea3cc5725a47f7c235..44eb62a0e906ecfb4134b66481dbb2eeed8c306d 100644
+index 26753001966ab944c524b4ede79d58afe3b4f4de..924a9e196a841bc43f18b2fc9af34594aa2a28a0 100644
 --- a/modules/libpref/init/all.js
 +++ b/modules/libpref/init/all.js
-@@ -3500,7 +3500,7 @@ pref("browser.search.removeEngineInfobar.enabled", true);
+@@ -3475,7 +3475,7 @@ pref("browser.search.removeEngineInfobar.enabled", true);
  pref("media.gmp-manager.allowLocalSources", true);
  
  // Update service URL for GMP install/updates:
@@ -11,7 +11,7 @@ index 37cba58e2091b617345453ea3cc5725a47f7c235..44eb62a0e906ecfb4134b66481dbb2ee
  
  // Whether or not to perform reader mode article parsing on page load.
  // If this pref is disabled, we will never show a reader mode icon in the toolbar.
-@@ -4152,6 +4152,15 @@ pref("toolkit.osKeyStore.loglevel", "Warn");
+@@ -4210,6 +4210,15 @@ pref("toolkit.osKeyStore.loglevel", "Warn");
  
  pref("extensions.formautofill.supportRTL", false);
  

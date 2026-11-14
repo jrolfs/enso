@@ -1,8 +1,8 @@
 diff --git a/browser/locales/en-US/browser/menubar.ftl b/browser/locales/en-US/browser/menubar.ftl
-index d29e2b1fbc59a2fda7f982a09600c260d148c248..d5188d73cbb39e4295d196ce91dda58e8b0dd5e4 100644
+index 4770ed6b87213a17ae483010618b21cad04dc30a..37375f41ddf42c7d7bb9cef36e3f286c2b69de8b 100644
 --- a/browser/locales/en-US/browser/menubar.ftl
 +++ b/browser/locales/en-US/browser/menubar.ftl
-@@ -378,3 +378,7 @@ menu-report-broken-site =
+@@ -383,3 +383,7 @@ menu-report-broken-site =
  # use the browser. "Share" here means recommending or referring the browser
  menu-referrals2 =
      .label = Share { -brand-product-name }

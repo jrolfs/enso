@@ -1,8 +1,8 @@
 diff --git a/modules/libpref/init/StaticPrefList.yaml b/modules/libpref/init/StaticPrefList.yaml
-index 72a14fae87a715f5d21f848fd79a08c183da9cfb..26788e915d3c3c66f10ba1a722847092350a3f4b 100644
+index 80be46d83cc04eb081ce58b4e322c8da15143c1c..07f2e15f6c6f3ce5eaac78d009a0ae09990dc042 100644
 --- a/modules/libpref/init/StaticPrefList.yaml
 +++ b/modules/libpref/init/StaticPrefList.yaml
-@@ -8869,6 +8869,45 @@
+@@ -9010,6 +9010,45 @@
    value: 0
    mirror: always
  
@@ -48,7 +48,7 @@ index 72a14fae87a715f5d21f848fd79a08c183da9cfb..26788e915d3c3c66f10ba1a722847092
  #---------------------------------------------------------------------------
  # Prefs starting with "html5."
  #---------------------------------------------------------------------------
-@@ -21298,6 +21337,7 @@
+@@ -21633,6 +21672,7 @@
    mirror: always
  #endif
  

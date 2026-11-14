@@ -1,8 +1,8 @@
 diff --git a/browser/locales/en-US/browser/appmenu.ftl b/browser/locales/en-US/browser/appmenu.ftl
-index 451657fd118ed149e4867478027be14fe7908cea..8bf973cd2cafe3e3ab0967aa0eb5cbbef3eed870 100644
+index e24def3df8982f835b0c09635d13f892c96cda19..a766538211d82633816b2625c4fef205fcebc9dc 100644
 --- a/browser/locales/en-US/browser/appmenu.ftl
 +++ b/browser/locales/en-US/browser/appmenu.ftl
-@@ -408,6 +408,10 @@ appmenu-help-not-deceptive =
+@@ -406,6 +406,10 @@ appmenu-help-not-deceptive =
      .label = This isn’t a deceptive site…
      .accesskey = d
  

@@ -1,5 +1,5 @@
 diff --git a/toolkit/components/extensions/ExtensionCommon.sys.mjs b/toolkit/components/extensions/ExtensionCommon.sys.mjs
-index 4e079770534d8e8ad89124ab572edaa626ece457..8a23c8521d7829be1deb2dc3376a1b39be0ec4db 100644
+index 6454baad48bc6dcf4ba532f591e9487c19661841..d52b18ed18203a68a76d069a5833054dba83f4f8 100644
 --- a/toolkit/components/extensions/ExtensionCommon.sys.mjs
 +++ b/toolkit/components/extensions/ExtensionCommon.sys.mjs
 @@ -689,6 +689,14 @@ export class BaseContext {

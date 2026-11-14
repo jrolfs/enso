@@ -1,5 +1,5 @@
 diff --git a/toolkit/themes/shared/desktop-jar.inc.mn b/toolkit/themes/shared/desktop-jar.inc.mn
-index a2b1b894f4e46b1553724971d7688509b93c7864..ecb3d2f145b24a45a116b3354c2d8cab47b18e56 100644
+index 88fae08bbf9106385ed817dc283a31e722590e6c..cbcffb467d5931f88f0052acfbd2c561839031fa 100644
 --- a/toolkit/themes/shared/desktop-jar.inc.mn
 +++ b/toolkit/themes/shared/desktop-jar.inc.mn
 @@ -37,6 +37,9 @@

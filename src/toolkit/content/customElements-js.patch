@@ -1,5 +1,5 @@
 diff --git a/toolkit/content/customElements.js b/toolkit/content/customElements.js
-index b41936929efe7bd5048d00319b80673b42dc8d84..f3c5dea5661bb5e9990612dae64ec32ce2608919 100644
+index 2d93cc3f2335f1c173d481bd76e24c742ad13e78..f273a378ea1831ef515d9d7074cfd4bc84044778 100644
 --- a/toolkit/content/customElements.js
 +++ b/toolkit/content/customElements.js
 @@ -786,6 +786,12 @@

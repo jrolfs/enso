@@ -1,5 +1,5 @@
 diff --git a/python/mach/mach/site.py b/python/mach/mach/site.py
-index 8c4c196a230b2d66e22bd61e0c8e37a495dc48af..b680ac4a667c543f057266fb90190af2fc4a8b59 100644
+index b4b63c591e64ecae28d4015203ee7ba33f75e739..2305cfece4a1fb435294fa33439e465d6b9fd2a7 100644
 --- a/python/mach/mach/site.py
 +++ b/python/mach/mach/site.py
 @@ -386,7 +386,8 @@ class MachSiteManager:

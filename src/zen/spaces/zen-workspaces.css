@@ -24,8 +24,6 @@
   appearance: unset !important;
   height: fit-content;
   gap: 3px;
-
-  container-type: inline-size;
   width: 100%;
 
   & toolbarbutton {
@@ -60,7 +58,7 @@
       }
 
       @media (-moz-platform: macos) {
-        font-size: 15px;
+        font-size: 13px;
 
         &:is(img) {
           width: 16px;
@@ -178,7 +176,7 @@
 /* Mark workspaces indicator */
 .zen-current-workspace-indicator {
   --indicator-gap: calc(var(--toolbarbutton-padding-inner) - 1px);
-  padding: calc(3px + var(--tab-inline-padding) + var(--zen-toolbox-padding));
+  padding: calc(3px + var(--tab-padding-inline) + var(--zen-toolbox-padding));
   font-weight: 500;
   position: relative;
   max-height: var(--zen-workspace-indicator-height);
@@ -209,7 +207,7 @@
   }
 
   :root[zen-unsynced-window='true'][zen-sidebar-expanded='true'] & {
-    padding: calc(-2px + var(--tab-inline-padding) + var(--zen-toolbox-padding));
+    padding: calc(-2px + var(--tab-padding-inline) + var(--zen-toolbox-padding));
   }
 
   :root:not([zen-unsynced-window]) & {
@@ -323,6 +321,64 @@
   }
 }
 
+.zen-workspace-scroll-to-tab {
+  position: absolute;
+  inset-inline: 0;
+  margin-inline: auto;
+  width: fit-content;
+  z-index: 3;
+
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 999px;
+
+  color: light-dark(rgba(0, 0, 0, .8), white);
+  -moz-window-dragging: no-drag;
+
+  background: light-dark(color-mix(in srgb, var(--zen-accent-button-background) 10%, white), color-mix(in srgb, var(--zen-accent-button-background) 50%, black));
+  box-shadow: var(--tab-box-shadow-selected), 0 0px 10px rgba(0, 0, 0, 0.1);
+
+  transition: scale 0.15s ease-in-out;
+
+  :root:not([zen-sidebar-expanded="true"]) & {
+    display: none;
+  }
+
+  &[direction="up"] {
+    top: calc(var(--zen-scroll-to-tab-top, 0px) + 8px);
+    transform-origin: center top;
+  }
+
+  &[direction="down"] {
+    bottom: calc(var(--zen-scroll-to-tab-bottom, 0px) + 8px);
+    transform-origin: center bottom;
+  }
+
+  &:hover:not(:active) {
+    scale: 1.05;
+  }
+
+  & .zen-workspace-scroll-to-tab-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--border-radius-xsmall);
+  }
+
+  & .zen-workspace-scroll-to-tab-arrow {
+    width: 14px;
+    height: 14px;
+    -moz-context-properties: fill;
+    fill: currentColor;
+    list-style-image: url("chrome://browser/skin/zen-icons/forward.svg");
+    transform: rotate(-90deg);
+  }
+
+  &[direction="down"] .zen-workspace-scroll-to-tab-arrow {
+    transform: rotate(90deg);
+  }
+}
+
 /* mark: workspace element */
 zen-workspace {
   --toolbar-color: var(--toolbox-textcolor) !important;
@@ -334,11 +390,14 @@ zen-workspace {
   overflow: hidden;
   color: var(--toolbox-textcolor);
 
+  contain: size layout;
+
   --tab-background-color-selected: light-dark(
     color-mix(in srgb, rgba(255, 255, 255, 0.8) 98%, var(--zen-primary-color)),
     color-mix(in srgb, rgba(255, 255, 255, 0.18) 95%, var(--zen-primary-color))
   ) !important;
   --tab-box-shadow-selected: 0 0.8px 1.5px 0px light-dark(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.05)) !important;
+  --tab-text-color-selected: var(--tab-text-colorr) !important;
 
   @media not (prefers-reduced-motion: reduce) {
     transition: padding-top 0.1s;
@@ -362,7 +421,7 @@ zen-workspace {
       scrollbar-width: auto;
       scrollbar-color: color-mix(in srgb, currentColor 35%, transparent 65%) transparent; /* Custom scrollbar */
       overflow-y: auto;
-      padding-block-end: 120px;
+      padding-block-end: calc((var(--tab-min-height) * 3) + (var(--tab-margin-block) * 4));
       overscroll-behavior: auto;
     }
 
@@ -414,9 +473,8 @@ zen-workspace {
     }
   }
 
-  &:not([swipe-gesture]) :root:not(:is([animating-background])) #navigator-toolbox:not([movingtab]) &:not([active]) {
+  #navigator-toolbox:not([movingtab], [animating-background]) &:not([swipe-gesture], [active]) {
     -moz-subtree-hidden-only-visually: 1;
-    content-visibility: hidden;
   }
 }
 

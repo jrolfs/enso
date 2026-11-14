@@ -1,22 +1,22 @@
 diff --git a/browser/base/content/browser-menubar.inc.xhtml b/browser/base/content/browser-menubar.inc.xhtml
-index dca7c8281238f5ad4da0debc89defaf365273de6..4f6669895a25f2e6c6513cefb2c9be5f1fddc6be 100644
+index b36b57dc08d3443f2747fa5ed9fa79603f611301..05697a8816c22900ef49cd5ccda06461e3a0778d 100644
 --- a/browser/base/content/browser-menubar.inc.xhtml
 +++ b/browser/base/content/browser-menubar.inc.xhtml
 @@ -3,6 +3,7 @@
  # file, You can obtain one at http://mozilla.org/MPL/2.0/.
  
-        <menubar id="main-menubar">
+ <menubar id="main-menubar">
 +  <script src="chrome://glide/content/glide-menubar.js" />
-           <script src="chrome://browser/content/browser-menubar.js" />
-             <menu id="file-menu" data-l10n-id="menu-file">
-               <menupopup id="menu_FilePopup">
-@@ -436,6 +437,9 @@
- #endif
-               </menupopup>
-             </menu>
+   <script src="chrome://browser/content/browser-menubar.js" />
+   <menu id="file-menu" data-l10n-id="menu-file">
+     <menupopup id="menu_FilePopup" accesskey-conflicts-bug="2073895">
+@@ -476,6 +477,9 @@
+       <menuitem id="helpPolicySupport" hidden="true"/>
+     </menupopup>
+   </menu>
 +
 +  <menu id="menu_glideMode" data-l10n-id="menu-glide-mode">
 +  </menu>
  #ifdef XP_MACOSX
- <!-- Do not dynamically modify the Window menu and be careful when making static changes to it.
-      macOS adds extra functionality to this menu, such as a list of windows, which can break when
+ <!-- nsMenuBarX hides these and uses them to build the Application menu. -->
+ <!-- macOS 13 changed "Preferences" to "Settings" so one of these gets picked. -->

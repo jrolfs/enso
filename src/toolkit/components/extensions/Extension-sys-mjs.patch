@@ -1,8 +1,8 @@
 diff --git a/toolkit/components/extensions/Extension.sys.mjs b/toolkit/components/extensions/Extension.sys.mjs
-index d67edb4ec1fe9ce29c8879098c4a66f1e7309835..db57446893fdb5f0781a21dbfd2e66bba0173e02 100644
+index 6e813967d5bb2d53fa8c4c85dada82e985757daf..4b4a7f1b4395872d0b248b41040ee180fec5288f 100644
 --- a/toolkit/components/extensions/Extension.sys.mjs
 +++ b/toolkit/components/extensions/Extension.sys.mjs
-@@ -3599,6 +3599,22 @@ export class Extension extends ExtensionData {
+@@ -3591,6 +3591,22 @@ export class Extension extends ExtensionData {
      }
    }
  
@@ -25,7 +25,7 @@ index d67edb4ec1fe9ce29c8879098c4a66f1e7309835..db57446893fdb5f0781a21dbfd2e66bb
    // Some helpful properties added elsewhere:
  
    static getBootstrapScope() {
-@@ -3690,11 +3706,23 @@ export class Extension extends ExtensionData {
+@@ -3682,11 +3698,23 @@ export class Extension extends ExtensionData {
    }
  
    checkLoadURI(uri, options = {}) {

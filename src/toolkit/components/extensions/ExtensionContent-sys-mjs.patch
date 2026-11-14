@@ -1,8 +1,8 @@
 diff --git a/toolkit/components/extensions/ExtensionContent.sys.mjs b/toolkit/components/extensions/ExtensionContent.sys.mjs
-index 116c307808ffa7c58f37476fa60d8c1e97ec85bb..de227065e01d53f334c6072a6b1fc404584e954f 100644
+index ba7ee925f299ff5f5374651d10f4f3b47216c641..2ff28f208d7b0b0d484c5763abfbe0a7462af312 100644
 --- a/toolkit/components/extensions/ExtensionContent.sys.mjs
 +++ b/toolkit/components/extensions/ExtensionContent.sys.mjs
-@@ -1136,6 +1136,58 @@ export class ContentScriptContextChild extends BaseContext {
+@@ -1140,6 +1140,58 @@ export class ContentScriptContextChild extends BaseContext {
      );
      lazy.Schemas.exportLazyGetter(this.sandbox, "chrome", () => this.chromeObj);
  

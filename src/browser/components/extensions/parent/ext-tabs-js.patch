@@ -1,8 +1,8 @@
 diff --git a/browser/components/extensions/parent/ext-tabs.js b/browser/components/extensions/parent/ext-tabs.js
-index 0a9b522374bd78dd4038b24e211fa90dd0621b39..5abd7d1262e2b7406da0df8b57d76e683cf1ecf2 100644
+index cb2c4b387df5620b770d418506dfe55cb2feeeb4..5c69aa3bbd801207c3df55c199abe3b2a9dd0300 100644
 --- a/browser/components/extensions/parent/ext-tabs.js
 +++ b/browser/components/extensions/parent/ext-tabs.js
-@@ -439,6 +439,7 @@ this.tabs = class extends ExtensionAPIPersistent {
+@@ -440,6 +440,7 @@ this.tabs = class extends ExtensionAPIPersistent {
          }
  
          let tab = tabManager.getWrapper(updatedTab);
@@ -10,7 +10,7 @@ index 0a9b522374bd78dd4038b24e211fa90dd0621b39..5abd7d1262e2b7406da0df8b57d76e68
  
          let changeInfo = {};
          for (let prop of needed) {
-@@ -719,7 +720,10 @@ this.tabs = class extends ExtensionAPIPersistent {
+@@ -720,7 +721,10 @@ this.tabs = class extends ExtensionAPIPersistent {
            }).then(window => {
              let url;
  
@@ -22,7 +22,7 @@ index 0a9b522374bd78dd4038b24e211fa90dd0621b39..5abd7d1262e2b7406da0df8b57d76e68
              if (createProperties.cookieStoreId) {
                // May throw if validation fails.
                options.userContextId = getUserContextIdForCookieStoreId(
-@@ -807,6 +811,7 @@ this.tabs = class extends ExtensionAPIPersistent {
+@@ -808,6 +812,7 @@ this.tabs = class extends ExtensionAPIPersistent {
                });
              }
  
@@ -30,7 +30,7 @@ index 0a9b522374bd78dd4038b24e211fa90dd0621b39..5abd7d1262e2b7406da0df8b57d76e68
              let nativeTab = window.gBrowser.addTab(url, options);
              tabTracker.addTabReadyBlocker(nativeTab);
  
-@@ -880,7 +885,8 @@ this.tabs = class extends ExtensionAPIPersistent {
+@@ -881,7 +886,8 @@ this.tabs = class extends ExtensionAPIPersistent {
                flags: updateProperties.loadReplace
                  ? Ci.nsIWebNavigation.LOAD_FLAGS_REPLACE_HISTORY
                  : Ci.nsIWebNavigation.LOAD_FLAGS_NONE,
@@ -40,7 +40,7 @@ index 0a9b522374bd78dd4038b24e211fa90dd0621b39..5abd7d1262e2b7406da0df8b57d76e68
              };
  
              if (!context.checkLoadURL(url, { dontReportErrors: true })) {
-@@ -1661,7 +1667,13 @@ this.tabs = class extends ExtensionAPIPersistent {
+@@ -1668,7 +1674,13 @@ this.tabs = class extends ExtensionAPIPersistent {
                }
              }
            }
