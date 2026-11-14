@@ -76,11 +76,11 @@ already patched. When only `src/` changed, skip it and run `./mach build`.
 ## Updating
 
 ```bash
-bash scripts/enso/sync-zen.sh             # merges zen/dev and leaves the merge open
+bash scripts/enso/sync-zen.sh             # squash-merges zen/dev, uncommitted
 bash scripts/enso/sync-glide.sh 0.1.65a   # moves Glide to a release
 bash scripts/enso/integrate.sh            # regenerates patches, prepares engine/
 npm run build
-git commit                                # concludes the merge
+git commit                                # one commit for the whole sync
 ```
 
 Either sync can run alone. Pick a Glide release whose Firefox version, in
@@ -103,7 +103,7 @@ than by diffing patch files against each other.
 
 | | |
 |---|---|
-| `scripts/enso/sync-zen.sh` | merges Zen upstream, resolving patch conflicts to Zen's side |
+| `scripts/enso/sync-zen.sh` | squash-merges Zen upstream from `.zen-sync-base`, resolving patch conflicts to Zen's side |
 | `scripts/enso/sync-glide.sh` | moves the Glide submodule, then builds and syncs it |
 | `scripts/enso/integrate.sh` | re-downloads Firefox on a version change, then vendors, exports, imports and materializes |
 | `scripts/enso/vendor-branches.sh` | replays each fork's patches onto its own branch, then merges |

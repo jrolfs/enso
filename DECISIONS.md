@@ -487,17 +487,27 @@ mach directly is safe once a build has been configured once.
 The commands are in [ENSO.md](ENSO.md#updating). This section records why they
 have the shape they do.
 
-### Zen rewrote its history
+### Zen's history stays out of this repo
 
-Zen's `dev` was rewritten after this fork was cut. The fork's base,
+Zen rewrote its `dev` history after this fork was cut. The fork's base,
 `968d6a905`, has the same tree as Zen's `7dfcd34fc` under a different hash,
-and the two histories share nothing after April 2024, so `git merge zen/dev`
-would have taken a 2024 commit as the merge base and conflicted everywhere. A
-one-time `git merge -s ours 7dfcd34fc` reconnected them. It changes no files,
-which is correct only because the two trees are byte-identical, and it needed
-no force push. If Zen rewrites again, find the matching commit with
-`git log --format='%H %T' zen/dev | grep <tree of the last Zen commit merged>`
-and repeat.
+and the two histories share nothing after April 2024. The rewritten history
+also carries signed Windows builds of about 95 MB each, committed in September
+2024 and deleted a month later, which this fork's copy never had. Reconnecting
+the two with a `-s ours` merge was tried first, and it made the next push about
+5.7 GB, over GitHub's 2 GB limit.
+
+So Zen's commits never enter this repo's history. `.zen-sync-base` records the
+last Zen commit synced, and `sync-zen.sh` squash-merges from there to
+`zen/dev`. A temporary local `git replace --graft` gives HEAD that commit as a
+second parent, so git takes it as the merge base and the full merge machinery,
+rename detection and rerere included, still applies. The graft is deleted
+straight after the merge and is never pushed. Each Zen sync is one commit here,
+and its message lists the Zen commits it squashes.
+
+If Zen rewrites again, `sync-zen.sh` stops because `zen/dev` no longer contains
+the recorded commit. It prints the command that finds the commit with the same
+tree; record that one and re-run.
 
 ### The repo-level merge is mechanical
 
@@ -505,16 +515,16 @@ and repeat.
 own and then writes the merge result over the files Glide touches. So
 `sync-zen.sh` resolves every patch conflict to Zen's side, and the real
 integration happens in `engine/`, where conflicts are on real source and
-rerere replays known resolutions. The merge stays open until `integrate.sh`
-has regenerated the patches, so the merge commit itself builds.
+rerere replays known resolutions. The sync stays uncommitted until
+`integrate.sh` has regenerated the patches, so the sync commit itself builds.
 
 ### `vendor/zen` comes from the zen remote
 
 `vendor-branches.sh` used to build `vendor/zen` from this repo's `src/`. After
 the first export those patches already contain Glide, so `vendor/zen` would
 have been Zen plus Glide, and the merge would have been Glide into itself. It
-now extracts Zen's `src/` with `git archive` at `zen_ref` in `lib.sh`: the Zen
-commit being merged, or the last one merged.
+now extracts Zen's `src/` with `git archive` at the commit recorded in
+`.zen-sync-base`.
 
 ### Resetting `engine/`
 
